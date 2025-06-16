@@ -1,0 +1,47 @@
+{
+  "name": "brahma-xr",
+  "version": "1.0.1",
+  "description": "collaborative virtual environments for scientific visualization",
+  "type": "module",
+  "main": "./build/brahma.cjs",
+  "module": "./build/brahma.js",
+  "exports": {
+    ".": {
+      "import": "./build/brahma.js",
+      "require": "./build/brahma.cjs"
+    },
+    "./server": {
+      "import": "./build/server.js",
+      "require": "./build/server.cjs"
+    }
+  },
+  "directories": {
+    "example": "examples"
+  },
+  "files": [
+    "build/"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "vite",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Samir Ghosh",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.5",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.43.0"
+  },
+  "peerDependencies": {
+    "three": "^0.177.0"
+  },
+  "devDependencies": {
+    "three": "^0.177.0"
+  }
+}

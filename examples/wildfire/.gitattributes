@@ -1,0 +1,2 @@
+*.json filter=lfs diff=lfs merge=lfs -text
+Raw[[:space:]]Data[[:space:]]and[[:space:]]Scripts/Agents/agentStatesWithLoc.json filter=lfs diff=lfs merge=lfs -text

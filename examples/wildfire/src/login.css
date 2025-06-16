@@ -1,0 +1,86 @@
+#login-panel {
+  position: fixed;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  padding-bottom: 0px;
+  border-radius: 10px;
+  color: white;
+  width: 300px;
+  top: 30px; /* 30px margin from the top */
+  left: 30px; /* 30px margin from the left */
+}
+
+.section {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid white;
+}
+
+.section:last-child {
+  border-bottom: none;
+  margin-top: 20px;
+}
+
+#username {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 5px;
+  color: white;
+}
+
+#username:focus {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.color-grid {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.color-option {
+  width: 40px;
+  height: 40px;
+  border-radius: 10%; /* Rounded corners */
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.color-option.selected {
+  transform: scale(1.2);
+  box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.8);
+  border: 3px solid white;
+}
+
+.pastel-blue {
+  background-color: #a2d2ff;
+}
+.pastel-pink {
+  background-color: #ffafcc;
+}
+.pastel-green {
+  background-color: #caffbf;
+}
+.pastel-yellow {
+  background-color: #ffd6a5;
+}
+.pastel-purple {
+  background-color: #bdb2ff;
+}
+.pastel-orange {
+  background-color: #ffadad;
+}
+
+#login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}

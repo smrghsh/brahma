@@ -1,0 +1,1 @@
+{"version":3,"file":"server.js","sources":["../src/server.js"],"sourcesContent":["export class BrahmaServer {\n  constructor() {\n    console.log(\"BrahmaServer (backend) initialized\");\n  }\n}\n"],"names":["BrahmaServer","_createClass","_classCallCheck","console","log"],"mappings":"8EAAA,IAAaA,EAAYC,GACvB,SAAAD,iGAAcE,MAAAF,GACZG,QAAQC,IAAI,qCACd"}
