@@ -31,9 +31,18 @@
   "license": "MIT",
   "devDependencies": {
     "all-contributors-cli": "^6.26.1",
-    "three": "^0.177.0"
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.5",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.43.0"
   },
   "peerDependencies": {
+    "three": "^0.177.0"
+  },
+  "devDependencies": {
     "three": "^0.177.0"
   }
 }
