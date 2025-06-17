@@ -42,6 +42,7 @@ It's the early stages of this project, so feel free to reach out to contributors
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/smrghsh"><img src="https://avatars.githubusercontent.com/u/22751315?v=4?s=100" width="100px;" alt="Samir Ghosh"/><br /><sub><b>Samir Ghosh</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=smrghsh" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://kajal-jotwani-portfolio.vercel.app/"><img src="https://avatars.githubusercontent.com/u/130732790?v=4?s=100" width="100px;" alt="Kajal Jotwani"/><br /><sub><b>Kajal Jotwani</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=kajal-jotwani" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
