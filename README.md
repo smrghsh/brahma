@@ -7,6 +7,7 @@ It is purposely design to require minimal computation, and can work across every
 
 
 ## Examples
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 
 ## Features
@@ -33,8 +34,10 @@ Using this library necessitates strong development practices in Three.js and som
 It's the early stages of this project, so feel free to reach out to contributors and ask about the project.
 
 ## Contributors
-<!-- I will contribute here -->
 <!-- https://github.com/all-contributors/all-contributors -->
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -42,7 +45,7 @@ It's the early stages of this project, so feel free to reach out to contributors
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/smrghsh"><img src="https://avatars.githubusercontent.com/u/22751315?v=4?s=100" width="100px;" alt="Samir Ghosh"/><br /><sub><b>Samir Ghosh</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=smrghsh" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://kajal-jotwani-portfolio.vercel.app/"><img src="https://avatars.githubusercontent.com/u/130732790?v=4?s=100" width="100px;" alt="Kajal Jotwani"/><br /><sub><b>Kajal Jotwani</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=kajal-jotwani" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/kajal-jotwani"><img src="https://avatars.githubusercontent.com/u/130732790?v=4?s=100" width="100px;" alt="Kajal Jotwani"/><br /><sub><b>Kajal Jotwani</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=kajal-jotwani" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
@@ -60,6 +63,8 @@ It's the early stages of this project, so feel free to reach out to contributors
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 ## Support
 Support for the came in many ways from
