@@ -35,6 +35,30 @@ It's the early stages of this project, so feel free to reach out to contributors
 ## Contributors
 <!-- I will contribute here -->
 <!-- https://github.com/all-contributors/all-contributors -->
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/smrghsh"><img src="https://avatars.githubusercontent.com/u/22751315?v=4?s=100" width="100px;" alt="Samir Ghosh"/><br /><sub><b>Samir Ghosh</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=smrghsh" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td align="center" size="13px" colspan="7">
+        <img src="https://raw.githubusercontent.com/all-contributors/all-contributors-cli/1b8533af435da9854653492b1327a23a4dbd0a10/assets/logo-small.svg">
+          <a href="https://all-contributors.js.org/docs/en/bot/usage">Add your contributions</a>
+        </img>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Support
 Support for the came in many ways from
