@@ -1,45 +1,60 @@
-const fs = require("fs");
-const https = require("https");
-const WebSocket = require("ws");
-const express = require("express");
-const cors = require("cors");
+import fs from "fs";
+import https from "https";
+// import http from "http"; 
+import WebSocket from "ws";
+import { WebSocketServer } from "ws";
+import express from "express";
+import cors from "cors";
 
 export class BrahmaServer {
-  constructor() {
+  constructor({
+    port = 8080,
+    certPath = "../cert/cert.pem",
+    keyPath = "../cert/key.pem",
+  } = {}) {
     console.log("Initializing BrahmaServer...");
-    // this does any initialization code
-    // TODO: make sure any variables and constants are defined here using the this keyword
+
+    this.port = port;
+    this.certPath = certPath;
+    this.keyPath = keyPath;
+
     this.app = express();
     this.interlocutors = {};
     this.simulationTime = 0;
-    this.simulationPlaying = false; //false for paused, true for playing
+    this.simulationPlaying = false;
     this.simulationRate = 1;
+    this.server = null;
+    this.wss = null;
+  }
 
-        // Create HTTPS server
-    this.server = https.createServer(this.serverConfig, this.app);
-    this.wss = new WebSocket.Server({ this.server });
+    initialize() {
 
-        this.app.use(cors());
+    // Load SSL/TLS certificate and private key
+    const serverConfig = {
+      cert: fs.readFileSync(
+        "/etc/letsencrypt/live/brahma.xrss.org/fullchain.pem"
+      ),
+      key: fs.readFileSync("/etc/letsencrypt/live/brahma.xrss.org/privkey.pem"),
+    };
+
+    // Create HTTPS server
+    this.server = https.createServer(serverConfig, this.app);
+    // this.server = http.createServer(this.app);
+    this.wss = new WebSocketServer({ server: this.server });
+
+    this.app.use(cors());
 
     // API route to get unique username and color
     this.app.get("/uniqueUsernameAndColor", (req, res) => {
-      const username = _generateUsername();
-      const color = _generatePastelColor();
+      const username = this._generateUsername();
+      const color = this._generatePastelColor();
       res.json({ username, color });
     });
 
     // API route to get active interlocutors
     this.app.get("/activeInterlocutors", (req, res) => {
-      res.json(interlocutors);
+      res.json(this.interlocutors);
     });
-
-        // const serverConfig = {
-    //   cert: fs.readFileSync(
-    //     ""
-    //   ),
-    //   key: fs.readFileSync("/etc/letsencrypt/live/brahma.xrss.org/privkey.pem"),
-    // };
-    // Load SSL/TLS certificate and private key
 
     /**
      * The formalized protocol
@@ -53,11 +68,9 @@ export class BrahmaServer {
      * RController: Mat4 // HMD position if desktop
      */
 
-
-
-    this.wss.on("connection", function connection(ws) {
+    this.wss.on("connection", (ws) => {
       console.log("Secure client connected");
-      ws.on("message", function incoming(message) {
+      ws.on("message", (message) => {
         // console.log("Received: %s", message);
         try {
           const data = JSON.parse(message);
@@ -65,10 +78,10 @@ export class BrahmaServer {
           if (data.name && data.color) {
             // this means with high confidence that the interlocutor is attempting to send name, color, and avatar embodiment data
 
-            if (!interlocutors[data.name]) {
+            if (!this.interlocutors[data.name]) {
               // interlocutor introducing itself, as it doesn't exist yet in the interlocutors object
-              interlocutors[data.name] = { name: data.name, color: data.color };
-              interlocutors[data.name].timeJoined = Date.now();
+              this.interlocutors[data.name] = { name: data.name, color: data.color };
+              this.interlocutors[data.name].timeJoined = Date.now();
               console.log(
                 `New interlocutor created: ${data.name}, color: ${data.color}`
               );
@@ -89,9 +102,9 @@ export class BrahmaServer {
           ) {
             // here, or in a similar manner, you would handle other types of messages from the client
             // the client should also be able to update the timescrubber, callouts etc.
-            simulationTime = data.simulationtime;
-            simulationRate = data.simulationrate;
-            simulationPlaying = data.simulationplaying;
+            this.simulationTime = data.simulationtime;
+            this.simulationRate = data.simulationrate;
+            this.simulationPlaying = data.simulationplaying;
             console.log(
               "Received time command: " +
                 data.simulationtime +
@@ -108,17 +121,14 @@ export class BrahmaServer {
           ws.send("Error: Invalid message format");
         }
       });
-
-
-
       ws.on("close", () => {
         console.log("Client disconnected");
       });
     });
 
-
     console.log("BrahmaServer (backend) initialized");
   }
+
   _generateUsername() {
     const alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let username;
@@ -129,9 +139,10 @@ export class BrahmaServer {
           Math.floor(Math.random() * alphanumeric.length)
         );
       }
-    } while (Object.keys(interlocutors).includes(username)); // Ensure unique username
+    } while (Object.keys(this.interlocutors).includes(username)); // Ensure unique username
     return username;
   }
+
   _generatePastelColor() {
     const randomHex = () => Math.floor(Math.random() * 128 + 127); // Pastel color component
     const red = randomHex().toString(16).padStart(2, "0");
@@ -141,16 +152,15 @@ export class BrahmaServer {
     return `0x${red}${green}${blue}`;
   }
 
-
   _broadcast() {
     // for each interlocutor, if the lastUpdated is more than 5 minutes ago, delete them
     // const now = Date.now();
-    // Object.keys(interlocutors).forEach((name) => {
-    //   if (now - interlocutors[name].lastUpdated > 300000) {
-    //     delete interlocutors[name];
+    // Object.keys(this.interlocutors).forEach((name) => {
+    //   if (now - this.interlocutors[name].lastUpdated > 300000) {
+    //     delete this.interlocutors[name];
     //   }
     // });
-    let packet = Object.values(interlocutors).map(
+    let packet = Object.values(this.interlocutors).map(
       ({ name, color, HMDPosition, LController, RController }) => ({
         name,
         color,
@@ -162,25 +172,26 @@ export class BrahmaServer {
 
     packet = JSON.stringify(packet);
 
-    wss.clients.forEach((client) => {
+    this.wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(packet);
       }
     });
   }
+
   //This function takes care of sending any non-interlocutor data to the clients
   _broadcastTime() {
     let type = "timePacket";
     let timePacket = {
       type: type,
-      simulationTime: simulationTime,
-      simulationPlaying: simulationPlaying,
-      simulationRate: simulationRate,
+      simulationTime: this.simulationTime,
+      simulationPlaying: this.simulationPlaying,
+      simulationRate: this.simulationRate,
     };
 
     timePacket = JSON.stringify(timePacket);
 
-    wss.clients.forEach((client) => {
+    this.wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(timePacket);
       }
@@ -188,12 +199,11 @@ export class BrahmaServer {
   }
 
   run() {
-
     console.log("BrahmaServer is running...");
 
     // Start the HTTPS server on port 8080
     this.server.listen(8080, () => {
-      console.log("🛜 WebSocket server started on wss://localhost:8080");
+      console.log(`🛜 WebSocket server started on ws://localhost:${this.port}`);
     });
   }
 }
