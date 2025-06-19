@@ -30,6 +30,7 @@
   "author": "Samir Ghosh",
   "license": "MIT",
   "devDependencies": {
+    "all-contributors-cli": "^6.26.1",
     "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
     "@rollup/plugin-babel": "^6.0.4",
