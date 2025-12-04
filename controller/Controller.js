@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import Experience from "../../Experience";
+import Experience from "../../Experience.js";
 import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerModelFactory";
 import PadControls from "./PadControls";
-import RaycasterHandler from "../RaycastHandler";
+import RaycasterHandler from "../utilities/RaycastHandler";
 import Locomotion from "./Locomotion";
 import Grasp from "./Grasp";
 
@@ -17,7 +17,7 @@ export default class Controller {
       Mesh: {
         threshold: 0.005, // Set the threshold for mesh intersections
       },
-    }
+    };
     this.currentIntersect = null;
     this.raycasterHandler = new RaycasterHandler(this.raycaster);
     this.locomotion = new Locomotion();

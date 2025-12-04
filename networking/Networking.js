@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import Experience from "../Experience.js";
-import Interlocutors from "../World/Interlocutors.js";
-import { objectScale } from "three/webgpu";
+import Experience from "../../Experience.js";
+import Interlocutors from "../avatars/Interlocutors.js";
+// import { objectScale } from "three/webgpu";
 
 export default class Networking {
   constructor() {
@@ -52,19 +52,16 @@ export default class Networking {
       });
   }
   handleServerMessage(data) {
-    
     if (Array.isArray(data)) {
       this.receiveEmbodiments(data);
     }
     // else if (Object.hasOwn(data, "type") && data.type === "callouts") {
     //   this.receiveCallouts(data["callouts"]);
     // }
-    else if(Object.hasOwn(data, "type") && data.type === "timePacket") {
+    else if (Object.hasOwn(data, "type") && data.type === "timePacket") {
       //console.log("TimePacket not in use");
-    }
-    else {
+    } else {
       console.error("Unknown message type:", data);
-
     }
   }
 
@@ -84,7 +81,7 @@ export default class Networking {
       throw error;
     }
   }
-  
+
   // async contributeCallout(calloutID) {
   //   if (!this.user.parameters.userName) {
   //     console.error("No username found");

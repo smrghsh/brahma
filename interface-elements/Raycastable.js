@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import Experience from "../Experience";
-import RaycasterHandler from "../Utils/RaycastHandler";
+import Experience from "../../Experience.js";
+import RaycasterHandler from "../utilities/RaycastHandler";
 
 export default class Raycastable extends THREE.Mesh {
   constructor(

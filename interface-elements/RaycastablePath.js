@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Line2 } from "three/addons/lines/Line2.js";
-import Experience from "../Experience";
+import Experience from "../../Experience.js";
 
 export default class RaycastablePath extends THREE.Group {
   constructor(

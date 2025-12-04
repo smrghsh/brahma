@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Experience from "../../Experience";
+import Experience from "../../Experience.js";
 export default class Locomotion {
   constructor(speedScalar = 4) {
     this.experience = new Experience();

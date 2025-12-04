@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import horizontalGridVertexShader from "../../shaders/horizontalGrid/vertex.glsl";
-import horizontalGridFragmentShader from "../../shaders/horizontalGrid/fragment.glsl";
-import Experience from "../Experience.js";
+import horizontalGridVertexShader from "../shaders/horizontalGrid/vertex.glsl";
+import horizontalGridFragmentShader from "../shaders/horizontalGrid/fragment.glsl";
+import Experience from "../../Experience.js";
 
 export default class Floor {
   constructor() {
