@@ -8,7 +8,7 @@ export default class Stars {
     this.resources = this.experience.resources;
     // console.log(this.resources);
     const particlesGeometry = new THREE.BufferGeometry();
-    const count = 700;
+    const count = 250;
     const positions = new Float32Array(count * 3);
     const color = new Float32Array(count * 3);
     for (let i = 0; i < count * 3; i++) {
@@ -16,14 +16,14 @@ export default class Stars {
     }
 
     for (let i = 0; i < count * 3; i += 3) {
-      let a = 20;
-      let b = 25;
+      let a = 40;
+      let b = 50;
       let distance = Math.random() * (b - a) + a;
       // let rot1 = Math.random()*(Math.PI)
       let rot1 = Math.acos(2 * Math.random() - 1.0);
       let rot2 = Math.random() * (2 * Math.PI);
       positions[i] = Math.sin(rot1) * Math.cos(rot2) * distance;
-      positions[i + 1] = Math.sin(rot1) * Math.sin(rot2) * distance;
+      positions[i + 1] = Math.abs(Math.sin(rot1) * Math.sin(rot2) * distance);
       positions[i + 2] = Math.cos(rot1) * distance;
     }
     particlesGeometry.setAttribute(

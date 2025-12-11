@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
+import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
 import EventEmitter from "./EventEmitter.js";
 
 export default class Resources extends EventEmitter {
@@ -22,6 +23,7 @@ export default class Resources extends EventEmitter {
     this.loaders.textureLoader = new THREE.TextureLoader();
     this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader();
     this.loaders.fontLoader = new FontLoader();
+    this.loaders.exrLoader = new EXRLoader();
   }
   startLoading() {
     // Load each source
@@ -44,6 +46,10 @@ export default class Resources extends EventEmitter {
         });
       } else if (source.type === "font") {
         this.loaders.fontLoader.load(source.path, (file) => {
+          this.sourceLoaded(source, file);
+        });
+      } else if (source.type === "exr") {
+        this.loaders.exrLoader.load(source.path, (file) => {
           this.sourceLoaded(source, file);
         });
       } else if (source.type === "simulationData") {
