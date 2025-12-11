@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { Line2 } from "three/addons/lines/Line2.js";
 import Experience from "../../Experience.js";
 
-export default class RaycastablePath extends THREE.Group {
+export default class Path extends THREE.Group {
   constructor(
     geometry,
     material,
@@ -13,7 +13,7 @@ export default class RaycastablePath extends THREE.Group {
     super();
 
     // if you delete this line it will break
-    this.isRaycastablePath = true; // (RaycastHandler -> RaycastablePath)
+    this.isPath = true;
 
     this.initialColor = initialColor; // green (default)
     this.hoveredColor = hoveredColor; // red
@@ -25,9 +25,9 @@ export default class RaycastablePath extends THREE.Group {
     this.name = name;
 
     this.experience = new Experience();
-    this.experience.raycastableObjects.push(this);
+    this.experience.selectableObjects.push(this);
     this.hover = false;
-    this.raycastable = true;
+    this.selectable = true;
     this.active = true;
 
     if (this.line.material && this.line.material.color) {
@@ -59,17 +59,16 @@ export default class RaycastablePath extends THREE.Group {
       intersects.push(hit);
     }
   }
-  raycastEnter() {
+  onHover() {
     this.hover = true;
     if (this.line.material && this.line.material.color) {
       this.line.material.color.set(this.hoveredColor);
     }
-    this.experience.controller?.pointerController?.padControls.pulse(25, 0.125);
     if (this.marker) this.marker.visible = true; // show marker on hover
     // find the intersection point as a 3D vecto, and place the callout there.
     // rotate the plane to face the camera.
   }
-  raycastExit() {
+  onUnhover() {
     this.hover = false;
     if (this.line.material && this.line.material.color) {
       this.line.material.color.set(this.initialColor);
@@ -78,7 +77,7 @@ export default class RaycastablePath extends THREE.Group {
     if (this.marker) this.marker.visible = false; // hide marker on exit
   }
   // keep trigger function but keep it empty
-  trigger(location) {
+  onSelect(location) {
     if (this.marker) {
       console.log(location);
       this.setSphere(location);

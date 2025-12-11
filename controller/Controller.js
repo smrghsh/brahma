@@ -2,24 +2,12 @@ import * as THREE from "three";
 import Experience from "../../Experience.js";
 import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerModelFactory";
 import PadControls from "./PadControls";
-import RaycasterHandler from "../utilities/RaycastHandler";
 import Locomotion from "./Locomotion";
 import Grasp from "./Grasp";
 
 export default class Controller {
   constructor() {
     this.experience = new Experience();
-    this.raycaster = new THREE.Raycaster();
-    this.raycaster.params = {
-      Line: {
-        threshold: 0.005, // Set the threshold for line intersections
-      },
-      Mesh: {
-        threshold: 0.005, // Set the threshold for mesh intersections
-      },
-    };
-    this.currentIntersect = null;
-    this.raycasterHandler = new RaycasterHandler(this.raycaster);
     this.locomotion = new Locomotion();
     this.grasp = new Grasp();
     this.pointerActivationDelay = 250;
@@ -64,7 +52,6 @@ export default class Controller {
     this.experience.cameraGroup.add(this.leftControllerGrip);
     this.experience.cameraGroup.add(this.rightControllerGrip);
 
-    this.createPointer();
     this.init();
   }
 
@@ -77,7 +64,6 @@ export default class Controller {
     ) {
       this.leftController.padControls.update();
       this.rightController.padControls.update();
-      this.updateRaycaster();
       this.updatePointer();
       // Update locomotion
       this.locomotion.update();
@@ -93,7 +79,6 @@ export default class Controller {
           this.r_connection = true;
           this.controller1.padControls.gamepad = event.data.gamepad;
           this.rightController = this.controller1;
-          this.raycaster.setFromXRController(this.rightController);
         } else {
           this.r_connection = false;
         }
@@ -102,7 +87,6 @@ export default class Controller {
           this.l_connection = true;
           this.controller1.padControls.gamepad = event.data.gamepad;
           this.leftController = this.controller1;
-          this.raycaster.setFromXRController(this.leftController);
         } else {
           this.l_connection = false;
         }
@@ -131,27 +115,12 @@ export default class Controller {
     });
   }
 
-  createPointer() {
-    this.pointerLength = 1;
-    this.pointerRadius = 0.005;
-    const pointer = new THREE.Mesh(
-      new THREE.ConeGeometry(this.pointerRadius, this.pointerLength),
-      new THREE.MeshStandardMaterial()
-    );
-    pointer.name = "pointer";
-    pointer.rotation.x = -Math.PI / 2;
-    pointer.position.z = -this.pointerLength / 2;
-    pointer.visible = false;
-    this.leftController.add(pointer.clone());
-    this.rightController.add(pointer.clone());
-  }
-
   init() {
     console.info(`[Controller.js (both controllers)] initialized`);
   }
 
-  async updateRaycaster() {
-    // set pointer controller to the controller that is currently pressing the trigger
+  async updatePointer() {
+    // Determine active pointer controller based on trigger/button press
     if (
       this.r_connection &&
       (this.rightController.padControls.primaryTrigger.pressDown ||
@@ -165,31 +134,19 @@ export default class Controller {
     ) {
       this.pointerController = this.leftController;
     }
-    // set raycaster to pointer controller
-    this.raycaster.setFromXRController(this.pointerController);
-  }
 
-  async updatePointer() {
-    if (this.pointerController === this.rightController) {
-      this.rightController.getObjectByName("pointer").visible = true;
-      this.leftController.getObjectByName("pointer").visible = false;
-      this.pointer = this.rightController.getObjectByName("pointer");
-    } else {
-      this.rightController.getObjectByName("pointer").visible = false;
-      this.leftController.getObjectByName("pointer").visible = true;
-      this.pointer = this.leftController.getObjectByName("pointer");
-    }
+    // Update pointer source and perform hover raycasting
+    this.experience.pointer.setSource("controller", this.pointerController);
+    this.experience.pointer.hover();
 
-    this.raycasterHandler.handleRaycast();
-
+    // Handle selection on trigger press with cooldown
     if (this.pointerController.padControls.primaryTrigger.isPressed) {
-      // only do the following if the current time is greater than the last time the pointer was activated by the delay
       if (
         Date.now() - this.pointerLastActivated >
         this.pointerActivationDelay
       ) {
         this.pointerLastActivated = Date.now();
-        this.raycasterHandler.activateCurrentIntersect();
+        this.experience.pointer.select();
       }
     }
   }
