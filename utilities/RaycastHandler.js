@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Experience from "../../Experience.js";
-// import RaycastablePath from "../UI/RaycastablePath.js";
+import RaycastablePath from "../interface-elements/RaycastablePath.js";
 
 export default class RaycasterHandler {
   constructor(raycaster, color1 = 0x00ff00, color2 = 0xffff00) {
@@ -29,19 +29,19 @@ export default class RaycasterHandler {
       // use flag check instead of instanceof
       while (obj && !obj.isRaycastablePath && obj.parent) {
         if (obj.parent.isRaycastablePath) {
-           obj = obj.parent;
-           break;
+          obj = obj.parent;
+          break;
         }
         obj = obj.parent;
       }
-      
+
       if (obj.isRaycastablePath) {
         // found valid raycastablepath
         intersect.object = obj; // set intersect object to raycastablepath
         validIntersects.push(intersect);
       } else if (obj.active || obj.raycastable) {
-         // other raycastable object
-         validIntersects.push(intersect);
+        // other raycastable object
+        validIntersects.push(intersect);
       }
     }
 
@@ -55,28 +55,33 @@ export default class RaycasterHandler {
           console.error("material enter undefined");
         }
         this.material.needsUpdate = true;
-        
+
         this.currentIntersect = validIntersects[0];
         if (this.currentIntersect.object.raycastEnter) {
-            this.currentIntersect.object.raycastEnter();
+          this.currentIntersect.object.raycastEnter();
         }
-        
+
         for (let i = 1; i < validIntersects.length; i++) {
-          if (validIntersects[i].object.active && validIntersects[i].object.raycastExit) {
-             validIntersects[i].object.raycastExit();
+          if (
+            validIntersects[i].object.active &&
+            validIntersects[i].object.raycastExit
+          ) {
+            validIntersects[i].object.raycastExit();
           }
         }
       } else {
         // there is a current intersect, check if the current intersect is the same as the new intersect
-        if (this.currentIntersect.object.uuid === validIntersects[0].object.uuid) {
-            // Same object, but we might need to update the hover marker position
-             const hit = validIntersects[0];
-             const obj = hit.object;
-             if (obj.isRaycastablePath && obj.marker) {
-                 //based on example: using pointOnLine for precise tracking
-                 const p = hit.pointOnLine || hit.point;
-                 if (p) obj.setSphere(p);
-             }
+        if (
+          this.currentIntersect.object.uuid === validIntersects[0].object.uuid
+        ) {
+          // Same object, but we might need to update the hover marker position
+          const hit = validIntersects[0];
+          const obj = hit.object;
+          if (obj.isRaycastablePath && obj.marker) {
+            //based on example: using pointOnLine for precise tracking
+            const p = hit.pointOnLine || hit.point;
+            if (p) obj.setSphere(p);
+          }
         } else {
           // if it is not the same, exit the current intersect and set the new intersect
           if (this.currentIntersect.object.raycastExit) {
@@ -87,9 +92,12 @@ export default class RaycasterHandler {
             this.currentIntersect.object.raycastEnter();
           }
           for (let i = 1; i < validIntersects.length; i++) {
-             if (validIntersects[i].object.active && validIntersects[i].object.raycastExit) {
-                 validIntersects[i].object.raycastExit();
-             }
+            if (
+              validIntersects[i].object.active &&
+              validIntersects[i].object.raycastExit
+            ) {
+              validIntersects[i].object.raycastExit();
+            }
           }
         }
       }
@@ -100,7 +108,7 @@ export default class RaycasterHandler {
           console.error("material exit undefined");
         }
         this.material.needsUpdate = true;
-       
+
         this.experience.raycastableObjects.forEach((r) => {
           if (r.hover && r.raycastExit) {
             r.raycastExit();
@@ -117,12 +125,13 @@ export default class RaycasterHandler {
       try {
         if (this.currentIntersect.object.isRaycastablePath) {
           // based on threejs example: using pointOnLine for precise tracking
-          const p = this.currentIntersect.pointOnLine || this.currentIntersect.point;
+          const p =
+            this.currentIntersect.pointOnLine || this.currentIntersect.point;
           this.currentIntersect.object.trigger(p);
           this.lingeringSphere = this.currentIntersect.object;
         } else {
           if (this.currentIntersect.object.trigger) {
-             this.currentIntersect.object.trigger();
+            this.currentIntersect.object.trigger();
           }
         }
         // console.info(
