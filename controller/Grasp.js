@@ -24,19 +24,19 @@ export default class Grasp {
 
     // Check for intersections with grabbable objects using bounding boxes
     let intersectedObject = null;
-    this.experience.grabbableObjects.forEach((grabbable) => {
-      // console.log("Controller position:", controllerPosition);
-      // console.log(`${grabbable.name}'s bounding box:`, grabbable.boundingBox);
+    // this.experience.grabbableObjects.forEach((grabbable) => {
+    //   // console.log("Controller position:", controllerPosition);
+    //   // console.log(`${grabbable.name}'s bounding box:`, grabbable.boundingBox);
 
-      // Update the bounding box of the grabbable object to account for movement
-      grabbable.updateBoundingBox();
+    //   // Update the bounding box of the grabbable object to account for movement
+    //   grabbable.updateBoundingBox();
 
-      // if controllerPosition is within the bounding box of the grabbable object
-      if (grabbable.boundingBox.containsPoint(controllerPosition)) {
-        intersectedObject = grabbable;
-        console.log(`${grabbable.name} is intersected`);
-      }
-    });
+    //   // if controllerPosition is within the bounding box of the grabbable object
+    //   if (grabbable.boundingBox.containsPoint(controllerPosition)) {
+    //     intersectedObject = grabbable;
+    //     console.log(`${grabbable.name} is intersected`);
+    //   }
+    // });
 
     // If the top button is pressed and an object is intersected, grab the object
     if (

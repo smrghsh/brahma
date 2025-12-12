@@ -53,14 +53,10 @@ export default class Resources extends EventEmitter {
           this.sourceLoaded(source, file);
         });
       } else if (source.type === "simulationData") {
-        fetch(source.path, {
-          headers: {
-            Accept: "application/json",
-          },
-        })
+        fetch(source.path)
           .then((response) => {
             // console.log(response);
-            return response.json();
+            return response.text();
           })
           .then((data) => {
             this.sourceLoaded(source, data);
