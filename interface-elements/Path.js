@@ -82,6 +82,12 @@ export default class Path extends THREE.Group {
       console.log(location);
       this.setSphere(location);
     }
+
+    // Position callout at clicked point
+    if (this.experience.world?.callout) {
+      this.experience.world.callout.position.copy(location);
+      this.experience.world.callout.visible = true;
+    }
   }
   // this should be removed
   spawnSphere() {
