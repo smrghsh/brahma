@@ -83,10 +83,35 @@ export default class Path extends THREE.Group {
       this.setSphere(location);
     }
 
-    // Position callout at clicked point
+    // Position callout at clicked point and update with nearest point data
     if (this.experience.world?.callout) {
       this.experience.world.callout.position.copy(location);
       this.experience.world.callout.visible = true;
+
+      // Find nearest point in seal path data and update callout
+      if (this.sealPath) {
+        const nearestData = this.sealPath.findNearestPoint(location);
+        if (nearestData) {
+          // Set the seal path and point index for navigation
+          this.experience.world.callout.setSealPath(
+            this.sealPath,
+            nearestData.index
+          );
+
+          this.experience.world.callout.updateInformationDisplay(
+            nearestData.lat,
+            nearestData.lng,
+            nearestData.depth,
+            nearestData.resp,
+            nearestData.seconds,
+            nearestData.sleep,
+            nearestData.stroke,
+            nearestData.heading,
+            nearestData.pitch,
+            nearestData.roll
+          );
+        }
+      }
     }
   }
   // this should be removed

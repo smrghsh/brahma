@@ -10,8 +10,10 @@ export default class Controller {
     this.experience = new Experience();
     this.locomotion = new Locomotion();
     this.grasp = new Grasp();
-    this.pointerActivationDelay = 250;
+    this.pointerActivationDelay = 50;
     this.pointerLastActivated = 0;
+    this.thumbstickScrubDelay = 30; // ms between scrub updates
+    this.thumbstickLastScrubTime = 0;
     this.controller1 = this.experience.renderer.instance.xr.getController(0);
     this.controller2 = this.experience.renderer.instance.xr.getController(1);
     //instantiate Pad Controls
@@ -120,33 +122,47 @@ export default class Controller {
   }
 
   async updatePointer() {
-    // Determine active pointer controller based on trigger/button press
-    if (
-      this.r_connection &&
-      (this.rightController.padControls.primaryTrigger.pressDown ||
-        this.rightController.padControls.buttons.top.pressDown)
-    ) {
+    // Always use right controller as default pointer (or left if right not connected)
+    // This ensures consistent pointer behavior even when not pressing buttons
+    if (this.r_connection) {
       this.pointerController = this.rightController;
-    } else if (
-      this.l_connection &&
-      (this.leftController.padControls.primaryTrigger.pressDown ||
-        this.leftController.padControls.buttons.top.pressDown)
-    ) {
+    } else if (this.l_connection) {
       this.pointerController = this.leftController;
     }
 
     // Update pointer source and perform hover raycasting
-    this.experience.pointer.setSource("controller", this.pointerController);
-    this.experience.pointer.hover();
+    if (this.pointerController) {
+      this.experience.pointer.setSource("controller", this.pointerController);
+      this.experience.pointer.hover();
 
-    // Handle selection on trigger press with cooldown
-    if (this.pointerController.padControls.primaryTrigger.isPressed) {
+      // Handle selection on trigger press with cooldown
       if (
-        Date.now() - this.pointerLastActivated >
-        this.pointerActivationDelay
+        this.pointerController.padControls.primaryTrigger.isPressed ||
+        this.pointerController.padControls.buttons.top.isPressed
       ) {
-        this.pointerLastActivated = Date.now();
-        this.experience.pointer.select();
+        if (
+          Date.now() - this.pointerLastActivated >
+          this.pointerActivationDelay
+        ) {
+          this.pointerLastActivated = Date.now();
+          this.experience.pointer.select();
+        }
+      }
+
+      // Handle joystick scrubbing for callout
+      const thumbstick = this.pointerController.padControls.thumbstick;
+      const now = Date.now();
+
+      if (Math.abs(thumbstick.x) > 0.5) {
+        // Scrub continuously while held, throttled by delay
+        if (now - this.thumbstickLastScrubTime > this.thumbstickScrubDelay) {
+          if (thumbstick.x > 0) {
+            this.experience.world.callout?.advancePoint();
+          } else {
+            this.experience.world.callout?.decrementPoint();
+          }
+          this.thumbstickLastScrubTime = now;
+        }
       }
     }
   }
