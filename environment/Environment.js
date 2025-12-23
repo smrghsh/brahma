@@ -2,11 +2,11 @@ import * as THREE from "three";
 import Experience from "../../Experience.js";
 
 export default class Environment {
-  constructor() {
+  constructor(color = "Black") {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
-    this.scene.background = new THREE.Color("Black");
+    this.scene.background = new THREE.Color(color);
     this.setSunLight();
     this.setAmbientLight();
     // this.scene.fog = new THREE.Fog("#ffffff", 1, 30);
