@@ -281,6 +281,19 @@ export default class Networking {
       const interlocutorsData = data;
       // console.log("Parsed interlocutor data:", interlocutorsData);
 
+      // Get list of active interlocutor names from server
+      const activeNames = new Set(
+        interlocutorsData.map((i) => i.name)
+      );
+
+      // Remove embodiments that are no longer in the server's list
+      Object.keys(this.interlocutors.bodies).forEach((name) => {
+        if (!activeNames.has(name)) {
+          console.log(`Removing disconnected embodiment: ${name}`);
+          this.interlocutors.purgeEmbodiment(name);
+        }
+      });
+
       interlocutorsData.forEach((interlocutor) => {
         try {
           // console.log(`Processing interlocutor: ${interlocutor.name}`);
