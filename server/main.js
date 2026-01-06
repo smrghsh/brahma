@@ -3,11 +3,63 @@ const https = require("https");
 const WebSocket = require("ws");
 const express = require("express");
 const cors = require("cors");
+const os = require("os");
+const path = require("path");
 
 const app = express();
 app.use(cors());
 //Note: Data in the packet is all lowercase, whereas the data extracted is camelcased
 const interlocutors = {};
+
+// CSV logging setup
+const logDate = new Date().toLocaleDateString('en-US', { 
+  month: '2-digit', 
+  day: '2-digit', 
+  year: 'numeric' 
+}).replace(/\//g, '-');
+const logFilePath = path.join(os.homedir(), `interlocutor_tracking_${logDate}.csv`);
+let csvStream;
+
+// Initialize CSV file with headers
+function initializeCSV() {
+  const headers =
+    "timestamp,name,color,HMD_m0,HMD_m1,HMD_m2,HMD_m3,HMD_m4,HMD_m5,HMD_m6,HMD_m7,HMD_m8,HMD_m9,HMD_m10,HMD_m11,HMD_m12,HMD_m13,HMD_m14,HMD_m15," +
+    "LC_m0,LC_m1,LC_m2,LC_m3,LC_m4,LC_m5,LC_m6,LC_m7,LC_m8,LC_m9,LC_m10,LC_m11,LC_m12,LC_m13,LC_m14,LC_m15," +
+    "RC_m0,RC_m1,RC_m2,RC_m3,RC_m4,RC_m5,RC_m6,RC_m7,RC_m8,RC_m9,RC_m10,RC_m11,RC_m12,RC_m13,RC_m14,RC_m15\n";
+
+  if (!fs.existsSync(logFilePath)) {
+    fs.writeFileSync(logFilePath, headers);
+    console.log(`📝 CSV log file created: ${logFilePath}`);
+  } else {
+    console.log(`📝 Appending to existing CSV log: ${logFilePath}`);
+  }
+  
+  csvStream = fs.createWriteStream(logFilePath, { flags: "a" });
+}
+
+// Log interlocutor data to CSV
+function logInterlocutorsToCSV() {
+  const timestamp = new Date().toISOString();
+
+  Object.values(interlocutors).forEach((interlocutor) => {
+    if (
+      interlocutor.HMDPosition &&
+      interlocutor.LController &&
+      interlocutor.RController
+    ) {
+      const row = [
+        timestamp,
+        interlocutor.name,
+        interlocutor.color,
+        ...interlocutor.HMDPosition,
+        ...interlocutor.LController,
+        ...interlocutor.RController,
+      ].join(",");
+
+      csvStream.write(row + "\n");
+    }
+  });
+}
 
 // Helper function to generate random alphanumeric usernames
 function generateUsername() {
@@ -150,9 +202,13 @@ wss.on("connection", function connection(ws) {
   });
 });
 
+// Initialize CSV logging
+initializeCSV();
+
 // Start the HTTPS server on port 8080
 server.listen(8080, () => {
   console.log("🛜 WebSocket server started on wss://localhost:8080");
 });
 
 setInterval(broadcast, 1000 / 30); // Broadcast 30 times a second
+setInterval(logInterlocutorsToCSV, 250); // Log every 0.25 seconds
