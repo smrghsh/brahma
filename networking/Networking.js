@@ -10,6 +10,8 @@ export default class Networking {
     this.canSendEmbodiment = false;
     this.interlocutors = new Interlocutors();
     this.callouts = {};
+    this.lastCalloutSend = 0;
+    this.calloutThrottle = 100; // 10Hz max
 
     // First, fetch username and color from the server
     this.initializeUser()
@@ -58,7 +60,9 @@ export default class Networking {
     // else if (Object.hasOwn(data, "type") && data.type === "callouts") {
     //   this.receiveCallouts(data["callouts"]);
     // }
-    else if (Object.hasOwn(data, "type") && data.type === "timePacket") {
+    else if (Object.hasOwn(data, "type") && data.type === "callout") {
+      this.receiveCalloutUpdate(data);
+    } else if (Object.hasOwn(data, "type") && data.type === "timePacket") {
       //console.log("TimePacket not in use");
     } else {
       console.error("Unknown message type:", data);
@@ -353,5 +357,52 @@ export default class Networking {
     } catch (error) {
       console.error("Error parsing interlocutor data:", error);
     }
+  }
+
+  sendCalloutUpdate(visible, position, sealPath, pointIndex) {
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
+
+    // Throttle updates
+    const now = Date.now();
+    if (now - this.lastCalloutSend < this.calloutThrottle) return;
+    this.lastCalloutSend = now;
+
+    const data = {
+      type: "calloutUpdate",
+      name: this.user.parameters.userName,
+      visible: visible,
+      position: position ? [position.x, position.y, position.z] : null,
+      sealPath: sealPath,
+      pointIndex: pointIndex,
+    };
+
+    this.socket.send(JSON.stringify(data));
+    console.log("📤 Sent callout update");
+  }
+
+  receiveCalloutUpdate(data) {
+    if (!this.experience.world?.callout) return;
+
+    const callout = this.experience.world.callout;
+
+    if (data.visible && data.position) {
+      callout.visible = true;
+      callout.position.set(...data.position);
+
+      if (data.sealPath && data.pointIndex !== null) {
+        const sealPath = this.findSealPath(data.sealPath);
+        if (sealPath) {
+          callout.setSealPath(sealPath, data.pointIndex);
+          callout.updateFromPointIndex();
+        }
+      }
+      console.log(`📥 Received callout from ${data.triggeredBy}`);
+    } else {
+      callout.visible = false;
+    }
+  }
+
+  findSealPath(filename) {
+    return this.experience.world.sealPaths?.find((sp) => sp.name === filename);
   }
 }

@@ -11,6 +11,16 @@ app.use(cors());
 //Note: Data in the packet is all lowercase, whereas the data extracted is camelcased
 const interlocutors = {};
 
+// Shared callout state
+const sharedCallout = {
+  visible: false,
+  position: null,
+  sealPath: null,
+  pointIndex: null,
+  triggeredBy: null,
+  lastUpdated: null,
+};
+
 // CSV logging setup
 const logDate = new Date()
   .toLocaleDateString("en-US", {
@@ -143,12 +153,44 @@ function broadcast() {
   });
 }
 
+function broadcastCallout(excludeUser) {
+  const packet = JSON.stringify({
+    type: "callout",
+    ...sharedCallout,
+  });
+
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      const clientUser = Object.values(interlocutors).find(
+        (i) => i.ws === client
+      );
+      if (clientUser?.name !== excludeUser) {
+        client.send(packet);
+      }
+    }
+  });
+}
+
 wss.on("connection", function connection(ws) {
   console.log("Secure client connected");
   ws.on("message", function incoming(message) {
     // console.log("Received: %s", message);
     try {
       const data = JSON.parse(message);
+
+      // Handle callout updates
+      if (data.type === "calloutUpdate") {
+        sharedCallout.visible = data.visible;
+        sharedCallout.position = data.position;
+        sharedCallout.sealPath = data.sealPath;
+        sharedCallout.pointIndex = data.pointIndex;
+        sharedCallout.triggeredBy = data.name;
+        sharedCallout.lastUpdated = Date.now();
+
+        console.log(`📍 Callout updated by ${data.name}`);
+        broadcastCallout(data.name);
+        return;
+      }
 
       if (data.name && data.color) {
         // this means with high confidence that the interlocutor is attempting to send name, color, and avatar embodiment data

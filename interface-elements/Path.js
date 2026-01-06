@@ -112,6 +112,16 @@ export default class Path extends THREE.Group {
             nearestData.pitch,
             nearestData.roll
           );
+
+          // Send callout update to server if networking is available
+          if (this.experience.networking) {
+            this.experience.networking.sendCalloutUpdate(
+              true,
+              this.experience.world.callout.position,
+              this.sealPath.name,
+              nearestData.index
+            );
+          }
         }
       }
     }
