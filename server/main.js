@@ -8,13 +8,6 @@ const app = express();
 app.use(cors());
 //Note: Data in the packet is all lowercase, whereas the data extracted is camelcased
 const interlocutors = {};
-// add activeCallouts var
-
-// This data is for handling the simulationTime
-
-let simulationTime = 0;
-let simulationPlaying = false; //false for paused, true for playing
-let simulationRate = 1;
 
 // Helper function to generate random alphanumeric usernames
 function generateUsername() {
@@ -77,13 +70,6 @@ const server = https.createServer(serverConfig, app);
 const wss = new WebSocket.Server({ server });
 
 function broadcast() {
-  // for each interlocutor, if the lastUpdated is more than 5 minutes ago, delete them
-  // const now = Date.now();
-  // Object.keys(interlocutors).forEach((name) => {
-  //   if (now - interlocutors[name].lastUpdated > 300000) {
-  //     delete interlocutors[name];
-  //   }
-  // });
   let packet = Object.values(interlocutors).map(
     ({ name, color, HMDPosition, LController, RController }) => ({
       name,
@@ -115,11 +101,18 @@ wss.on("connection", function connection(ws) {
 
         if (!interlocutors[data.name]) {
           // interlocutor introducing itself, as it doesn't exist yet in the interlocutors object
-          interlocutors[data.name] = { name: data.name, color: data.color };
+          interlocutors[data.name] = {
+            name: data.name,
+            color: data.color,
+            ws: ws,
+          };
           interlocutors[data.name].timeJoined = Date.now();
           console.log(
             `New interlocutor created: ${data.name}, color: ${data.color}`
           );
+        } else {
+          // Update WebSocket reference in case of reconnection
+          interlocutors[data.name].ws = ws;
         }
 
         if (data.HMDPosition && data.LController && data.RController) {
@@ -139,7 +132,14 @@ wss.on("connection", function connection(ws) {
   });
 
   ws.on("close", () => {
-    console.log("Client disconnected");
+    // Find and remove the disconnected user
+    for (const [name, interlocutor] of Object.entries(interlocutors)) {
+      if (interlocutor.ws === ws) {
+        delete interlocutors[name];
+        console.log(`Client disconnected: ${name}`);
+        break;
+      }
+    }
   });
 });
 
@@ -149,4 +149,3 @@ server.listen(8080, () => {
 });
 
 setInterval(broadcast, 1000 / 30); // Broadcast 30 times a second
-setInterval(broadcastTime, 1000 / 5); // Broadcast 5 times a second
