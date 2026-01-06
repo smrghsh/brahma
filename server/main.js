@@ -12,12 +12,17 @@ app.use(cors());
 const interlocutors = {};
 
 // CSV logging setup
-const logDate = new Date().toLocaleDateString('en-US', { 
-  month: '2-digit', 
-  day: '2-digit', 
-  year: 'numeric' 
-}).replace(/\//g, '-');
-const logFilePath = path.join(os.homedir(), `interlocutor_tracking_${logDate}.csv`);
+const logDate = new Date()
+  .toLocaleDateString("en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
+  })
+  .replace(/\//g, "-");
+const logFilePath = path.join(
+  os.homedir(),
+  `interlocutor_tracking_${logDate}.csv`
+);
 let csvStream;
 
 // Initialize CSV file with headers
@@ -33,7 +38,7 @@ function initializeCSV() {
   } else {
     console.log(`📝 Appending to existing CSV log: ${logFilePath}`);
   }
-  
+
   csvStream = fs.createWriteStream(logFilePath, { flags: "a" });
 }
 
