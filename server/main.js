@@ -19,10 +19,7 @@ const logDate = new Date()
     year: "numeric",
   })
   .replace(/\//g, "-");
-const logFilePath = path.join(
-  os.homedir(),
-  `interlocutor_tracking_${logDate}.csv`
-);
+const logFilePath = `./interlocutor_tracking_${logDate}.csv`;
 let csvStream;
 
 // Initialize CSV file with headers
