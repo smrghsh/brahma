@@ -135,8 +135,13 @@ wss.on("connection", function connection(ws) {
     // Find and remove the disconnected user
     for (const [name, interlocutor] of Object.entries(interlocutors)) {
       if (interlocutor.ws === ws) {
-        const sessionDuration = ((Date.now() - interlocutor.timeJoined) / 1000).toFixed(1);
-        console.log(`🔌 Client disconnected: ${name} (session duration: ${sessionDuration}s)`);
+        const sessionDuration = (
+          (Date.now() - interlocutor.timeJoined) /
+          1000
+        ).toFixed(1);
+        console.log(
+          `🔌 Client disconnected: ${name} (session duration: ${sessionDuration}s)`
+        );
         delete interlocutors[name];
         console.log(`📊 Active users: ${Object.keys(interlocutors).length}`);
         break;
