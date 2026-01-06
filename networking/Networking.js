@@ -283,11 +283,14 @@ export default class Networking {
 
       // Get list of active interlocutor names from server
       const activeNames = new Set(interlocutorsData.map((i) => i.name));
+      
+      // console.log("Active names from server:", Array.from(activeNames));
+      // console.log("Local bodies:", Object.keys(this.interlocutors.bodies));
 
       // Remove embodiments that are no longer in the server's list
       Object.keys(this.interlocutors.bodies).forEach((name) => {
         if (!activeNames.has(name)) {
-          console.log(`Removing disconnected embodiment: ${name}`);
+          console.log(`🗑️ Removing disconnected embodiment: ${name}`);
           this.interlocutors.purgeEmbodiment(name);
         }
       });
