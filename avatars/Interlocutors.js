@@ -11,8 +11,23 @@ export default class Interlocutors {
   }
   purgeEmbodiment(name) {
     if (this.bodies.hasOwnProperty(name)) {
-      this.experience.scene.remove(this.bodies[name].group);
+      const body = this.bodies[name];
+      
+      // Remove from scene
+      this.experience.scene.remove(body.group);
+      
+      // Dispose of materials (but NOT geometries since they're shared)
+      if (body.material) {
+        body.material.dispose();
+      }
+      
+      // Clear the group
+      body.group.clear();
+      
+      // Delete from bodies object
       delete this.bodies[name];
+      
+      console.log(`✅ Purged embodiment: ${name}`);
     }
   }
   containsEmbodiment(name) {
