@@ -164,7 +164,7 @@ function broadcastCallout(excludeUser) {
       const clientUser = Object.values(interlocutors).find(
         (i) => i.ws === client
       );
-      if (clientUser?.name !== excludeUser) {
+      if (clientUser && clientUser.name !== excludeUser) {
         client.send(packet);
       }
     }
