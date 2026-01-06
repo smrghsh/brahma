@@ -7,8 +7,8 @@ export default class Grasp {
     this.grabbedObject = null; // The object currently being grabbed
     this.isGrabbing = false; // Whether an object is being grabbed
     this.controllerBoundingBox = new THREE.Box3(); // Controller bounding box for detecting intersections
-    this.axesHelper = new THREE.AxesHelper(0.1); // Axes helper for debugging
-    this.experience.scene.add(this.axesHelper);
+    // this.axesHelper = new THREE.AxesHelper(0.1); // Axes helper for debugging
+    // this.experience.scene.add(this.axesHelper);
     this.graspOffset = new THREE.Vector3(); // Offset between controller and grabbed object
     this.graspQuaternionOffset = new THREE.Quaternion(); // Offset between controller and grabbed object
   }
@@ -20,7 +20,7 @@ export default class Grasp {
     const controllerQuaternion = new THREE.Quaternion();
     controller.getWorldPosition(controllerPosition);
     controller.getWorldQuaternion(controllerQuaternion);
-    this.axesHelper.position.copy(controllerPosition);
+    // this.axesHelper.position.copy(controllerPosition);
 
     // Check for intersections with grabbable objects using bounding boxes
     let intersectedObject = null;

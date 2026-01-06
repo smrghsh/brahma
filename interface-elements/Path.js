@@ -104,8 +104,10 @@ export default class Path extends THREE.Group {
             nearestData.depth,
             nearestData.resp,
             nearestData.seconds,
+            nearestData.rTime,
             nearestData.sleep,
             nearestData.stroke,
+            nearestData.heartRate,
             nearestData.heading,
             nearestData.pitch,
             nearestData.roll
