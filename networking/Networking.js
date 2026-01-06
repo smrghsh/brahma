@@ -283,7 +283,7 @@ export default class Networking {
 
       // Get list of active interlocutor names from server
       const activeNames = new Set(interlocutorsData.map((i) => i.name));
-      
+
       // console.log("Active names from server:", Array.from(activeNames));
       // console.log("Local bodies:", Object.keys(this.interlocutors.bodies));
 
