@@ -282,9 +282,7 @@ export default class Networking {
       // console.log("Parsed interlocutor data:", interlocutorsData);
 
       // Get list of active interlocutor names from server
-      const activeNames = new Set(
-        interlocutorsData.map((i) => i.name)
-      );
+      const activeNames = new Set(interlocutorsData.map((i) => i.name));
 
       // Remove embodiments that are no longer in the server's list
       Object.keys(this.interlocutors.bodies).forEach((name) => {
