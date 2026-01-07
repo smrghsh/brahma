@@ -113,6 +113,16 @@ export default class Path extends THREE.Group {
             nearestData.roll
           );
 
+          // Update graphs asynchronously
+          if (this.experience.world.graphs) {
+            setTimeout(() => {
+              this.experience.world.graphs.updateGraphs(
+                this.sealPath,
+                nearestData.index
+              );
+            }, 0);
+          }
+
           // Send callout update to server if networking is available
           if (this.experience.networking) {
             this.experience.networking.sendCalloutUpdate(
