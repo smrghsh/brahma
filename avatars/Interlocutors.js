@@ -7,6 +7,7 @@ export default class Interlocutors {
     this.networking = this.experience.networking;
     this.bodies = {};
     this.boxGeometry = new THREE.BoxGeometry(0.25, 0.3, 0.15);
+
     this.handGeometry = new THREE.BoxGeometry(0.05, 0.1, 0.12);
   }
   purgeEmbodiment(name) {
@@ -45,10 +46,15 @@ export default class Interlocutors {
       color: color,
     });
 
-    this.bodies[name].head = new THREE.Mesh(
-      this.boxGeometry,
-      this.bodies[name].material
+    this.bodies[name].head = new THREE.Group();
+    this.bodies[name].head.add(
+      new THREE.Mesh(this.boxGeometry, this.bodies[name].material),
     );
+    const goggle = this.experience.resources.items.goggleModel.scene.clone();
+    goggle.scale.set(0.1, 0.1, 0.1);
+    goggle.position.set(0, 0, 0.1);
+    this.bodies[name].head.add(goggle);
+
     this.bodies[name].head.name = "HMD";
     this.bodies[name].head.position.set(0, 0.1, 0);
 
@@ -58,7 +64,7 @@ export default class Interlocutors {
 
     this.bodies[name].LController = new THREE.Mesh(
       this.handGeometry,
-      this.bodies[name].material
+      this.bodies[name].material,
     );
     this.bodies[name].LController.name = "LController";
     this.bodies[name].LController.position.set(0.1, 0, 0);
@@ -66,7 +72,7 @@ export default class Interlocutors {
 
     this.bodies[name].RController = new THREE.Mesh(
       this.handGeometry,
-      this.bodies[name].material
+      this.bodies[name].material,
     );
     this.bodies[name].RController.name = "RController";
     this.bodies[name].RController.position.set(-0.1, 0, 0);
@@ -76,7 +82,7 @@ export default class Interlocutors {
     name,
     HMDMatrix = new THREE.Matrix4(),
     LControllerMatrix = new THREE.Matrix4(),
-    RControllerMatrix = new THREE.Matrix4()
+    RControllerMatrix = new THREE.Matrix4(),
   ) {
     if (name == this.experience.user.parameters.userName) {
       return;
