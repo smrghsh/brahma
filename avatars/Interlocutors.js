@@ -9,6 +9,9 @@ export default class Interlocutors {
     this.boxGeometry = new THREE.BoxGeometry(0.25, 0.3, 0.15);
 
     this.handGeometry = new THREE.BoxGeometry(0.05, 0.1, 0.12);
+    this.sphereGeometry = new THREE.SphereGeometry(0.25, 8, 8);
+    this.sphereGeometry.scale(0.3, 0.5, 0.3);
+    // this.sphereGeometry.rotateY(Math.PI);
   }
   purgeEmbodiment(name) {
     if (this.bodies.hasOwnProperty(name)) {
@@ -48,11 +51,12 @@ export default class Interlocutors {
 
     this.bodies[name].head = new THREE.Group();
     this.bodies[name].head.add(
-      new THREE.Mesh(this.boxGeometry, this.bodies[name].material),
+      new THREE.Mesh(this.sphereGeometry, this.bodies[name].material),
     );
     const goggle = this.experience.resources.items.goggleModel.scene.clone();
     goggle.scale.set(0.1, 0.1, 0.1);
-    goggle.position.set(0, 0, 0.1);
+    goggle.position.set(0, 0, -0.1);
+    goggle.rotateY(Math.PI);
     this.bodies[name].head.add(goggle);
 
     this.bodies[name].head.name = "HMD";
