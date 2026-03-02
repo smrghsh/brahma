@@ -2,7 +2,7 @@
 ![two avatars in a virtual environment containing a gaussian splat of a coral reef](./docs/images/readme-thumbnail.png)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 *named after the [Hindu deity of creation](https://en.wikipedia.org/wiki/Brahma), `brahma` is a WebXR library for custom shared virtual environments, purpose built for complex visualizations.* In this current alpha release, the repository contains a collection of importable classes for virtual reality, avatar embodiment, and networking for use with standard Three.js projects.
@@ -20,6 +20,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="http://samir.tech"><img src="https://avatars.githubusercontent.com/u/22751315?v=4?s=100" width="100px;" alt="Samir Ghosh"/><br /><sub><b>Samir Ghosh</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=smrghsh" title="Code">💻</a> <a href="#maintenance-smrghsh" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://erikchao.com"><img src="https://avatars.githubusercontent.com/u/75496487?v=4?s=100" width="100px;" alt="Erik Chao"/><br /><sub><b>Erik Chao</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=echao-03" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
