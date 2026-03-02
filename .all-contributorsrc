@@ -1,0 +1,27 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "smrghsh",
+      "name": "Samir Ghosh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22751315?v=4",
+      "profile": "http://samir.tech",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "brahma",
+  "projectOwner": "smrghsh"
+}
