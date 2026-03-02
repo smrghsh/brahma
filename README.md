@@ -1,8 +1,9 @@
 # brahma
+![two avatars in a virtual environment containing a gaussian splat of a coral reef](docs/images/readme-thumbnail.pngreadme-thumbnail.png)
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-![two avatars in a virtual environment containing a gaussian splat of a coral reef](docs/images/readme-thumbnail.pngreadme-thumbnail.png)
 
 *named after the [Hindu deity of creation](https://en.wikipedia.org/wiki/Brahma), `brahma` is a WebXR library for custom shared virtual environments, purpose built for complex visualizations.* In this current alpha release, the repository contains a collection of importable classes for virtual reality, avatar embodiment, and networking for use with standard Three.js projects.
 
