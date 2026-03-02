@@ -1,5 +1,5 @@
 # brahma
-![two avatars in a virtual environment containing a gaussian splat of a coral reef](./docs/images/readme-thumbnail.pngreadme-thumbnail.png)
+![two avatars in a virtual environment containing a gaussian splat of a coral reef](./docs/images/readme-thumbnail.png)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
