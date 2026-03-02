@@ -20,6 +20,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="http://samir.tech"><img src="https://avatars.githubusercontent.com/u/22751315?v=4?s=100" width="100px;" alt="Samir Ghosh"/><br /><sub><b>Samir Ghosh</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=smrghsh" title="Code">💻</a> <a href="#maintenance-smrghsh" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/smraval"><img src="https://avatars.githubusercontent.com/u/188804623?v=4?s=100" width="100px;" alt="Shalini Raval"/><br /><sub><b>Shalini Raval</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=smraval" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://mgodje.github.io/"><img src="https://avatars.githubusercontent.com/u/114205884?v=4?s=100" width="100px;" alt="Maryann Godje"/><br /><sub><b>Maryann Godje</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=mgodje" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://erikchao.com"><img src="https://avatars.githubusercontent.com/u/75496487?v=4?s=100" width="100px;" alt="Erik Chao"/><br /><sub><b>Erik Chao</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=echao-03" title="Code">💻</a></td>
     </tr>
