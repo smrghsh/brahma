@@ -1,6 +1,31 @@
 # brahma
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 ![two avatars in a virtual environment containing a gaussian splat of a coral reef](docs/images/readme-thumbnail.pngreadme-thumbnail.png)
 
 *named after the [Hindu deity of creation](https://en.wikipedia.org/wiki/Brahma), `brahma` is a WebXR library for custom shared virtual environments, purpose built for complex visualizations.* In this current alpha release, the repository contains a collection of importable classes for virtual reality, avatar embodiment, and networking for use with standard Three.js projects.
 
 Users can join these spaces with or without internet, and from a variety of both 2D and VR devices. We are currently in an alpha release with a few demo environments from scientific collaborations spanning civil engineering, marine science, and AI warfare research. We are currently working on documentation and planning our beta release later this year.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://samir.tech"><img src="https://avatars.githubusercontent.com/u/22751315?v=4?s=100" width="100px;" alt="Samir Ghosh"/><br /><sub><b>Samir Ghosh</b></sub></a><br /><a href="https://github.com/smrghsh/brahma/commits?author=smrghsh" title="Code">💻</a> <a href="#maintenance-smrghsh" title="Maintenance">🚧</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
