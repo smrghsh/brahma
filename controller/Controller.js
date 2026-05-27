@@ -136,10 +136,8 @@ export default class Controller {
       this.experience.pointer.hover();
 
       // Handle selection on trigger press with cooldown
-      if (
-        this.pointerController.padControls.primaryTrigger.isPressed ||
-        this.pointerController.padControls.buttons.top.isPressed
-      ) {
+      // Keep pointer select on trigger only
+      if (this.pointerController.padControls.primaryTrigger.isPressed) {
         if (
           Date.now() - this.pointerLastActivated >
           this.pointerActivationDelay
@@ -147,6 +145,15 @@ export default class Controller {
           this.pointerLastActivated = Date.now();
           this.experience.pointer.select();
         }
+      }
+
+      // Right controller A/B: cycle splats
+      const rightButtons = this.rightController?.padControls?.buttons;
+      if (rightButtons?.a?.pressDown) {
+        this.experience.world?.cycleSplat(1);   // A = forward
+      }
+      if (rightButtons?.b?.pressDown) {
+        this.experience.world?.cycleSplat(-1);  // B = backward
       }
 
       // Handle joystick scrubbing for callout
