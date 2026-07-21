@@ -1,10 +1,9 @@
-import * as THREE from "three";
-import Experience from "../../Experience.js";
+import Experience from "../Experience.js";
 
 export default class User {
   constructor() {
     this.experience = new Experience();
-    // this.debug = this.experience.debug;
+    this.debug = this.experience.debug;
     this.parameters = {
       userName: "User",
       color: null,
@@ -20,18 +19,5 @@ export default class User {
         this.parameters.userName = value;
       });
     }
-  }
-  setUserName(userName) {
-    this.userName = userName;
-  }
-  setColor(color) {
-    console.log("user color set to", color);
-    this.color = color;
-  }
-  getUserName() {
-    return this.userName;
-  }
-  getColor() {
-    return this.color;
   }
 }

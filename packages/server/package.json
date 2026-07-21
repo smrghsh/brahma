@@ -2,6 +2,7 @@
   "name": "brahma-xr-server",
   "version": "2.0.0-beta.0",
   "description": "Self-hostable WebSocket relay server for brahma-xr collaborative WebXR environments",
+  "type": "module",
   "main": "main.js",
   "bin": {
     "brahma-xr-server": "./main.js"

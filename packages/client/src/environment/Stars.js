@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Experience from "../../Experience.js";
+import Experience from "../Experience.js";
 
 export default class Stars {
   constructor() {
@@ -41,11 +41,15 @@ export default class Stars {
     particlesMaterial.color = new THREE.Color("white");
     particlesMaterial.vertexColors = true;
 
-    particlesMaterial.map = this.resources.items.starTexture;
-    console.log(this.resources.starTexture);
+    // Star textures are optional — load "starTexture" / "star" sources to use them
+    if (this.resources.items?.starTexture) {
+      particlesMaterial.map = this.resources.items.starTexture;
+    }
     particlesMaterial.transparent = true;
-    particlesMaterial.alphaMap = this.resources.items.star;
-    particlesMaterial.alphaTest = 0.001;
+    if (this.resources.items?.star) {
+      particlesMaterial.alphaMap = this.resources.items.star;
+      particlesMaterial.alphaTest = 0.001;
+    }
     // particlesMaterial.depthTest = false
     particlesMaterial.depthWrite = false;
 

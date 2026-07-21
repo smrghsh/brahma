@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import Experience from "../Experience.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import Experience from "./Experience.js";
 
 export default class Camera {
   constructor() {
@@ -9,31 +9,40 @@ export default class Camera {
     this.scene = this.experience.scene;
     this.cameraGroup = this.experience.cameraGroup;
     this.canvas = this.experience.canvas;
+    this.config = this.experience.config?.camera ?? {};
     this.setInstance();
     this.setOrbitControls();
   }
+
   setInstance() {
+    const {
+      fov = 35,
+      near = 0.1,
+      far = 1000,
+      position = [-3.6277092514077784, 1.6242714732329864, 2.729361431631495],
+      lookAt = [0, 0, 0],
+    } = this.config;
     this.instance = new THREE.PerspectiveCamera(
-      35,
+      fov,
       this.sizes.width / this.sizes.height,
-      0.1,
-      1000,
+      near,
+      far,
     );
-    this.instance.position.set(
-      -3.6277092514077784,
-      1.6242714732329864,
-      2.729361431631495,
-    );
-    this.instance.lookAt(new THREE.Vector3(0, 0, 0));
+    this.instance.position.set(...position);
+    this.instance.lookAt(new THREE.Vector3(...lookAt));
     this.cameraGroup.add(this.instance);
   }
+
   setOrbitControls() {
     this.controls = new OrbitControls(this.instance, this.canvas);
+    this.controls.enableDamping = this.config.orbit?.damping ?? false;
   }
+
   resize() {
     this.instance.aspect = this.sizes.width / this.sizes.height;
     this.instance.updateProjectionMatrix();
   }
+
   update() {
     this.controls.update();
   }

@@ -1,6 +1,10 @@
+// Experience
+export { default as Experience } from "./Experience.js";
+
 // Core
 export { default as Camera } from "./Camera.js";
 export { default as Renderer } from "./Renderer.js";
+export { default as Pointer } from "./Pointer.js";
 
 // Utilities
 export { default as Debug } from "./utilities/Debug.js";
@@ -16,11 +20,13 @@ export { default as Stars } from "./environment/Stars.js";
 
 // Interface Elements
 export { default as Selectable } from "./interface-elements/Selectable.js";
-export { default as Path } from "./interface-elements/Path.js";
 
 // Networking
 export { default as Networking } from "./networking/Networking.js";
 export { default as User } from "./networking/User.js";
+
+// Avatars
+export { default as Interlocutors } from "./avatars/Interlocutors.js";
 
 // Controller
 export { default as Controller } from "./controller/Controller.js";

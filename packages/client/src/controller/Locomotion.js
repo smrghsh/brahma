@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Experience from "../../Experience.js";
+import Experience from "../Experience.js";
 export default class Locomotion {
   constructor(speedScalar = 4) {
     this.experience = new Experience();
@@ -8,7 +8,7 @@ export default class Locomotion {
     this.speedScalar = speedScalar;
     this.lastTimeTeleported = Date.now();
     this.teleportDelay = 2000;
-    this.floors = [0, -5];
+    this.floors = this.experience.config?.locomotion?.floors ?? [0, -5];
     // add horizontal planes of different colors to this.experience.scene at -4, -8, and -12
   }
 

@@ -1,5 +1,5 @@
-import ControllerButtons from "./ControllerButtons";
-import ControllerTrigger from "./ControllerTrigger";
+import ControllerButtons from "./ControllerButtons.js";
+import ControllerTrigger from "./ControllerTrigger.js";
 
 export default class PadControls {
   // nicknamed PadControls, this actually facilitates all the gamepad controls.

@@ -31,10 +31,5 @@
   "peerDependencies": {
     "lil-gui": ">=0.17.0",
     "three": ">=0.160.0 <1"
-  },
-  "peerDependenciesMeta": {
-    "lil-gui": {
-      "optional": true
-    }
   }
 }

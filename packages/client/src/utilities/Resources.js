@@ -1,11 +1,18 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
-import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
+import { EXRLoader } from "three/addons/loaders/EXRLoader.js";
 import EventEmitter from "./EventEmitter.js";
 
+/**
+ * Manifest-driven asset preloader. Pass an array of sources
+ * { name, type, path } with type one of: gltfModel, glbModel, texture,
+ * cubeTexture, font, exr, simulationData (raw text fetch).
+ *
+ * Emits "progress" (loaded, toLoad) per asset and "ready" when done.
+ */
 export default class Resources extends EventEmitter {
-  constructor(sources) {
+  constructor(sources = []) {
     super();
     this.sources = sources;
     // Setup
@@ -13,7 +20,14 @@ export default class Resources extends EventEmitter {
     this.toLoad = this.sources.length;
     this.loaded = 0;
     this.setLoaders();
-    this.startLoading();
+
+    if (this.toLoad === 0) {
+      // Nothing to load — announce readiness asynchronously so listeners
+      // attached right after construction still hear it
+      setTimeout(() => this.trigger("ready"));
+    } else {
+      this.startLoading();
+    }
   }
 
   setLoaders() {
@@ -25,6 +39,7 @@ export default class Resources extends EventEmitter {
     this.loaders.fontLoader = new FontLoader();
     this.loaders.exrLoader = new EXRLoader();
   }
+
   startLoading() {
     // Load each source
     for (const source of this.sources) {
@@ -55,13 +70,13 @@ export default class Resources extends EventEmitter {
       } else if (source.type === "simulationData") {
         fetch(source.path)
           .then((response) => {
-            // console.log(response);
             return response.text();
           })
           .then((data) => {
             this.sourceLoaded(source, data);
-            // log, loaded the simulation data source.
           });
+      } else {
+        console.warn(`brahma: unknown source type "${source.type}"`, source);
       }
     }
   }
@@ -70,10 +85,9 @@ export default class Resources extends EventEmitter {
     this.items[source.name] = file;
 
     this.loaded++;
+    this.trigger("progress", [this.loaded, this.toLoad]);
 
     if (this.loaded === this.toLoad) {
-      let loading = document.getElementById("loading");
-      loading.style.display = "none";
       this.trigger("ready");
     }
   }

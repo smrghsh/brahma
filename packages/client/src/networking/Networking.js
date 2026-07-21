@@ -1,295 +1,144 @@
 import * as THREE from "three";
-import Experience from "../../Experience.js";
+import Experience from "../Experience.js";
 import Interlocutors from "../avatars/Interlocutors.js";
-// import { objectScale } from "three/webgpu";
 
+/**
+ * WebSocket client for a brahma-xr-server room. Shares your embodiment
+ * (HMD + controller matrices) and renders everyone else's through
+ * Interlocutors. No connection is opened until connect() is called.
+ *
+ * Identity (name, color) is assigned by the server's welcome message.
+ *
+ * @param {object} [options]
+ * @param {string} [options.url] - server url, e.g. "ws://localhost:8080" —
+ *   falls back to the Experience networking config
+ * @param {string} [options.room] - room to join (default "default")
+ */
 export default class Networking {
-  constructor() {
+  constructor(options = {}) {
     this.experience = new Experience();
     this.user = this.experience.user;
-    this.canSendEmbodiment = false;
+
+    const config = this.experience.config?.networking ?? {};
+    this.url = options.url ?? config.url;
+    this.room = options.room ?? config.room ?? "default";
+    if (!this.url) {
+      throw new Error(
+        'brahma-xr: no server url. Pass networking: { url: "ws://localhost:8080" } to Experience ' +
+          "(or { url } to Networking). Run a server locally with: npx brahma-xr-server",
+      );
+    }
+
     this.interlocutors = new Interlocutors();
-    this.callouts = {};
+    this.connected = false; // true once the server has welcomed us
+    this.canSendEmbodiment = false; // gated on the welcome message
+    this.shouldReconnect = false;
+    this.reconnectDelay = 1000;
+    this.maxReconnectDelay = 15000;
     this.lastCalloutSend = 0;
     this.calloutThrottle = 100; // 10Hz max
-
-    // First, fetch username and color from the server
-    this.initializeUser()
-      .then(({ username, color }) => {
-        this.user.parameters.userName = username;
-        this.user.parameters.color = color;
-
-        console.log(`Received username: ${username}, color: ${color}`);
-
-        // Now create the WebSocket connection
-        this.socket = new WebSocket("wss://brahma.xrss.org:8080");
-
-        this.socket.onopen = () => {
-          console.log("WebSocket connection established");
-          this.sendInitialData(); // Send initial data when the connection opens
-          // Enable embodiment sending after 1 second
-          setTimeout(() => {
-            this.canSendEmbodiment = true;
-          }, 2000);
-        };
-
-        this.socket.onmessage = (event) => {
-          if (event.data.length > 1) {
-            let data = JSON.parse(event.data);
-            this.handleServerMessage(data);
-          }
-        };
-
-        this.socket.onerror = (error) => {
-          console.error("WebSocket error:", error);
-          console.log("ReadyState:", this.socket.readyState);
-        };
-
-        this.socket.onclose = (event) => {
-          console.log("WebSocket connection closed:", event.reason);
-        };
-      })
-      .catch((error) => {
-        console.error("Error initializing user:", error);
-      });
-  }
-  handleServerMessage(data) {
-    if (Array.isArray(data)) {
-      this.receiveEmbodiments(data);
-    }
-    // else if (Object.hasOwn(data, "type") && data.type === "callouts") {
-    //   this.receiveCallouts(data["callouts"]);
-    // }
-    else if (Object.hasOwn(data, "type") && data.type === "callout") {
-      this.receiveCalloutUpdate(data);
-    } else if (Object.hasOwn(data, "type") && data.type === "timePacket") {
-      //console.log("TimePacket not in use");
-    } else {
-      console.error("Unknown message type:", data);
-    }
   }
 
-  // Method to fetch username and color from the server
-  async initializeUser() {
-    try {
-      const response = await fetch(
-        "https://brahma.xrss.org:8080/uniqueUsernameAndColor",
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch username and color");
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      throw error;
-    }
-  }
-
-  // async contributeCallout(calloutID) {
-  //   if (!this.user.parameters.userName) {
-  //     console.error("No username found");
-  //     return;
-  //   }
-  //   if (!calloutID) {
-  //     console.error("No callout ID found");
-  //     return;
-  //   }
-  //   // callout endpoint looks kinda like this on backend
-  //   console.log("Contribute callout:", calloutID);
-  //   try {
-  //     const response = await fetch("https://brahma.xrss.org:8080/callout", {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         name: this.user.parameters.userName,
-  //         calloutID: calloutID,
-  //       }),
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error("Failed to contribute callout");
-  //     }
-  //     const data = await response.json();
-  //     console.log(data);
-  //     return data;
-  //   } catch (error) {
-  //     console.error("Error contributing callout:", error);
-  //     throw error;
-  //   }
-  // }
-
-  //attempting race
-  async contributeCallout(calloutID) {
-    if (!this.user.parameters.userName) {
-      console.error("No username found");
+  /** Open the connection (idempotent). Reconnects automatically until disconnect(). */
+  connect() {
+    if (
+      this.socket &&
+      (this.socket.readyState === WebSocket.CONNECTING ||
+        this.socket.readyState === WebSocket.OPEN)
+    ) {
       return;
     }
-    if (!calloutID) {
-      console.error("No callout ID found");
-      return;
-    }
+    this.shouldReconnect = true;
+    this.open();
+  }
 
-    console.log("Contribute callout:", calloutID);
+  open() {
+    const url = new URL(this.url);
+    url.searchParams.set("room", this.room);
+    this.socket = new WebSocket(url);
 
-    const MAX_RETRIES = 3;
-    const TIMEOUT = 2000;
-
-    const fetchWithTimeout = async (url, options) => {
-      return Promise.race([
-        fetch(url, options),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Request timed out")), TIMEOUT),
-        ),
-      ]);
+    this.socket.onopen = () => {
+      console.log(`brahma: connected to ${this.url} (room "${this.room}")`);
+      this.reconnectDelay = 1000;
     };
 
-    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    this.socket.onmessage = (event) => {
+      let data;
       try {
-        const response = await fetchWithTimeout(
-          "https://brahma.xrss.org:8080/callout",
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: this.user.parameters.userName,
-              calloutID: calloutID,
-            }),
-          },
+        data = JSON.parse(event.data);
+      } catch {
+        return;
+      }
+      this.handleServerMessage(data);
+    };
+
+    this.socket.onerror = (error) => {
+      console.error("brahma: WebSocket error:", error);
+    };
+
+    this.socket.onclose = () => {
+      this.connected = false;
+      this.canSendEmbodiment = false;
+      if (this.shouldReconnect) {
+        console.log(
+          `brahma: connection lost, reconnecting in ${this.reconnectDelay}ms`,
         );
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to contribute callout (status: ${response.status})`,
-          );
-        }
-
-        const data = await response.json();
-        console.log(data);
-        return data;
-      } catch (error) {
-        console.error(`Attempt ${attempt} failed:`, error.message);
-
-        if (attempt === MAX_RETRIES) {
-          console.error("All attempts to contribute callout failed.");
-          throw error;
-        }
-
-        console.log("Retrying...");
+        this.reconnectTimeout = setTimeout(
+          () => this.open(),
+          this.reconnectDelay,
+        );
+        this.reconnectDelay = Math.min(
+          this.reconnectDelay * 2,
+          this.maxReconnectDelay,
+        );
       }
-    }
-  }
-  async rescindCallout(calloutID) {
-    if (!this.user.parameters.userName) {
-      console.error("No username found");
-      return;
-    }
-    if (!calloutID) {
-      console.error("No callout ID found");
-      return;
-    }
-
-    console.log("Rescind callout:", calloutID);
-    try {
-      const response = await fetch("https://brahma.xrss.org:8080/callout", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: this.user.parameters.userName,
-          calloutID: calloutID,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to rescind callout");
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error rescinding callout:", error);
-      throw error;
-    }
-  }
-  async receiveCallouts(data) {
-    // if data is different than this.callouts, update this.callouts
-    if (JSON.stringify(data) !== JSON.stringify(this.callouts)) {
-      this.callouts = data;
-      console.log("Callouts updated:", this.callouts);
-    }
-  }
-  // async receiveCallouts() {
-  //   //abandoning, will work with websockets instead
-  //   try {
-  //     const response = await fetch("https://brahma.xrss.org:8080/callout");
-  //     if (!response.ok) {
-  //       throw new Error("Failed to fetch callouts");
-  //     }
-
-  //     const data = await response.json();
-  //     console.log("Received callouts:", data);
-  //     return data;
-  //   } catch (error) {
-  //     console.error("Error fetching callouts:", error);
-  //     throw error;
-  //   }
-  // }
-
-  //these will update the time on the server
-  sendTimePacket(time, rate, state) {
-    const data = {
-      type: "timeCommand",
-      simulationtime: time,
-      simulationrate: rate,
-      simulationplaying: state,
     };
-    this.socket.send(JSON.stringify(data));
-    console.log("Time command sent:", data);
   }
 
-  sendInitialData() {
-    const initData = {
-      name: this.user.parameters.userName,
-      color: this.user.parameters.color,
-    };
+  /** Close the connection and stop reconnecting. */
+  disconnect() {
+    this.shouldReconnect = false;
+    clearTimeout(this.reconnectTimeout);
+    this.socket?.close();
+    this.connected = false;
+    this.canSendEmbodiment = false;
+  }
 
-    // Send the initial user data as a string over WebSocket
-    this.socket.send(JSON.stringify(initData));
-    console.log("Initial user data sent:", initData);
+  handleServerMessage(data) {
+    if (data.type === "welcome") {
+      this.user.parameters.userName = data.name;
+      this.user.parameters.color = data.color;
+      this.connected = true;
+      this.canSendEmbodiment = true;
+      console.log(`brahma: welcome — you are ${data.name}`);
+    } else if (data.type === "roster") {
+      this.receiveEmbodiments(data.interlocutors);
+    } else if (data.type === "callout") {
+      this.receiveCalloutUpdate(data);
+    }
+    // Unknown message types are ignored so newer servers stay compatible
   }
 
   sendEmbodiment(HMD, LController, RController) {
-    // console.log("sending ", HMD.toArray());
+    if (!this.canSendEmbodiment) return;
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
+
     const data = {
+      v: 1,
+      type: "pose",
       name: this.user.parameters.userName,
       color: this.user.parameters.color,
       HMDPosition: HMD.toArray(),
       LController: LController.toArray(),
       RController: RController.toArray(),
     };
-
-    // Send the data as a string over WebSocket
-    if (this.canSendEmbodiment) {
-      this.socket.send(JSON.stringify(data));
-    } else {
-      console.log("Cannot send embodiment data yet");
-    }
+    this.socket.send(JSON.stringify(data));
   }
-  //put in the timedata from the server
-  receiveEmbodiments(data) {
-    // console.log("Raw data received from server:", data);
-    try {
-      const interlocutorsData = data;
-      // console.log("Parsed interlocutor data:", interlocutorsData);
 
+  receiveEmbodiments(interlocutorsData) {
+    try {
       // Get list of active interlocutor names from server
       const activeNames = new Set(interlocutorsData.map((i) => i.name));
-
-      // console.log("Active names from server:", Array.from(activeNames));
-      // console.log("Local bodies:", Object.keys(this.interlocutors.bodies));
 
       // Remove embodiments that are no longer in the server's list
       Object.keys(this.interlocutors.bodies).forEach((name) => {
@@ -301,7 +150,6 @@ export default class Networking {
 
       interlocutorsData.forEach((interlocutor) => {
         try {
-          // console.log(`Processing interlocutor: ${interlocutor.name}`);
           if (interlocutor.name === this.user.parameters.userName) {
             return;
           }
@@ -316,36 +164,17 @@ export default class Networking {
             );
           }
 
-          if (this.interlocutors.containsEmbodiment(interlocutor.name)) {
-            if (
-              interlocutor.HMDPosition &&
-              interlocutor.LController &&
-              interlocutor.RController
-            ) {
-              // console.log(`Updating positions for ${interlocutor.name}`);
-              const HMDMatrix = new THREE.Matrix4().fromArray(
-                interlocutor.HMDPosition,
-              );
-              const LControllerMatrix = new THREE.Matrix4().fromArray(
-                interlocutor.LController,
-              );
-              const RControllerMatrix = new THREE.Matrix4().fromArray(
-                interlocutor.RController,
-              );
-
-              this.interlocutors.updateEmbodiment(
-                interlocutor.name,
-                HMDMatrix,
-                LControllerMatrix,
-                RControllerMatrix,
-              );
-            } else {
-              console.warn(`Incomplete data for ${interlocutor.name}:`, {
-                HMDPosition: interlocutor.HMDPosition,
-                LController: interlocutor.LController,
-                RController: interlocutor.RController,
-              });
-            }
+          if (
+            interlocutor.HMDPosition &&
+            interlocutor.LController &&
+            interlocutor.RController
+          ) {
+            this.interlocutors.updateEmbodiment(
+              interlocutor.name,
+              new THREE.Matrix4().fromArray(interlocutor.HMDPosition),
+              new THREE.Matrix4().fromArray(interlocutor.LController),
+              new THREE.Matrix4().fromArray(interlocutor.RController),
+            );
           }
         } catch (error) {
           console.error(
@@ -359,7 +188,16 @@ export default class Networking {
     }
   }
 
-  sendCalloutUpdate(visible, position, sealPath, pointIndex) {
+  /**
+   * Share a callout (a pointed-at position plus whatever app data belongs
+   * with it) with everyone in the room. Throttled to 10Hz.
+   *
+   * @param {boolean} visible
+   * @param {THREE.Vector3|null} position
+   * @param {object} [payload] - arbitrary JSON your app attaches (e.g. which
+   *   path and point index the callout refers to)
+   */
+  sendCalloutUpdate(visible, position, payload = null) {
     if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
 
     // Throttle updates
@@ -368,41 +206,20 @@ export default class Networking {
     this.lastCalloutSend = now;
 
     const data = {
-      type: "calloutUpdate",
+      v: 1,
+      type: "callout",
       name: this.user.parameters.userName,
       visible: visible,
       position: position ? [position.x, position.y, position.z] : null,
-      sealPath: sealPath,
-      pointIndex: pointIndex,
+      payload: payload,
     };
-
     this.socket.send(JSON.stringify(data));
-    console.log("📤 Sent callout update");
   }
 
   receiveCalloutUpdate(data) {
-    if (!this.experience.world?.callout) return;
-
-    const callout = this.experience.world.callout;
-
-    if (data.visible && data.position) {
-      callout.visible = true;
-      callout.position.set(...data.position);
-
-      if (data.sealPath && data.pointIndex !== null) {
-        const sealPath = this.findSealPath(data.sealPath);
-        if (sealPath) {
-          callout.setSealPath(sealPath, data.pointIndex);
-          callout.updateFromPointIndex();
-        }
-      }
-      console.log(`📥 Received callout from ${data.triggeredBy}`);
-    } else {
-      callout.visible = false;
-    }
-  }
-
-  findSealPath(filename) {
-    return this.experience.world.sealPaths?.find((sp) => sp.name === filename);
+    // The library doesn't know what a callout means in your app —
+    // implement onCalloutUpdate(data) on your World to react to
+    // { name, visible, position, payload }.
+    this.experience.world?.onCalloutUpdate?.(data);
   }
 }

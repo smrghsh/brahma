@@ -1,10 +1,15 @@
 import * as THREE from "three";
-import Experience from "../../Experience.js";
+import Experience from "../Experience.js";
 
+/**
+ * Renders remote users: a colored head (plus the optional "goggleModel"
+ * resource, if your sources manifest loads one) and two hands, driven by
+ * the roster Networking receives. Customize by subclassing and overriding
+ * instantiateEmbodiment.
+ */
 export default class Interlocutors {
   constructor() {
     this.experience = new Experience();
-    this.networking = this.experience.networking;
     this.bodies = {};
     this.boxGeometry = new THREE.BoxGeometry(0.25, 0.3, 0.15);
 
@@ -53,11 +58,15 @@ export default class Interlocutors {
     this.bodies[name].head.add(
       new THREE.Mesh(this.sphereGeometry, this.bodies[name].material),
     );
-    const goggle = this.experience.resources.items.goggleModel.scene.clone();
-    goggle.scale.set(0.1, 0.1, 0.1);
-    goggle.position.set(0, 0, -0.1);
-    goggle.rotateY(Math.PI);
-    this.bodies[name].head.add(goggle);
+    // Goggles are optional — load a "goggleModel" source to get them
+    const goggleModel = this.experience.resources?.items?.goggleModel;
+    if (goggleModel) {
+      const goggle = goggleModel.scene.clone();
+      goggle.scale.set(0.1, 0.1, 0.1);
+      goggle.position.set(0, 0, -0.1);
+      goggle.rotateY(Math.PI);
+      this.bodies[name].head.add(goggle);
+    }
 
     this.bodies[name].head.name = "HMD";
     this.bodies[name].head.position.set(0, 0.1, 0);

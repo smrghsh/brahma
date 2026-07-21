@@ -1,9 +1,8 @@
-import * as THREE from "three";
-import Experience from "../../Experience.js";
-import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerModelFactory";
-import PadControls from "./PadControls";
-import Locomotion from "./Locomotion";
-import Grasp from "./Grasp";
+import Experience from "../Experience.js";
+import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFactory.js";
+import PadControls from "./PadControls.js";
+import Locomotion from "./Locomotion.js";
+import Grasp from "./Grasp.js";
 
 export default class Controller {
   constructor() {
@@ -33,8 +32,6 @@ export default class Controller {
 
     this.experience.cameraGroup.add(this.leftController);
     this.experience.cameraGroup.add(this.rightController);
-
-    this.locomotion = new Locomotion();
 
     this.r_connection = false;
     this.l_connection = false;
@@ -157,9 +154,9 @@ export default class Controller {
         // Scrub continuously while held, throttled by delay
         if (now - this.thumbstickLastScrubTime > this.thumbstickScrubDelay) {
           if (thumbstick.x > 0) {
-            this.experience.world.callout?.advancePoint();
+            this.experience.world?.callout?.advancePoint();
           } else {
-            this.experience.world.callout?.decrementPoint();
+            this.experience.world?.callout?.decrementPoint();
           }
           this.thumbstickLastScrubTime = now;
         }
