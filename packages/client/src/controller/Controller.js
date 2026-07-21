@@ -46,10 +46,10 @@ export default class Controller {
     this.rightControllerGrip =
       this.experience.renderer.instance.xr.getControllerGrip(1);
     this.leftControllerGrip.add(
-      controllerModelFactory.createControllerModel(this.leftControllerGrip)
+      controllerModelFactory.createControllerModel(this.leftControllerGrip),
     );
     this.rightControllerGrip.add(
-      controllerModelFactory.createControllerModel(this.rightControllerGrip)
+      controllerModelFactory.createControllerModel(this.rightControllerGrip),
     );
     this.experience.cameraGroup.add(this.leftControllerGrip);
     this.experience.cameraGroup.add(this.rightControllerGrip);

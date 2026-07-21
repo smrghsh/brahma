@@ -46,7 +46,7 @@ export default class Grasp {
     ) {
       this.graspOffset.subVectors(
         intersectedObject.position,
-        controllerPosition
+        controllerPosition,
       );
       this.startGrabbing(intersectedObject, controller);
     }

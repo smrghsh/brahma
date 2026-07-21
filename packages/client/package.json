@@ -1,0 +1,40 @@
+{
+  "name": "brahma-xr",
+  "version": "2.0.0-beta.0",
+  "description": "Collaborative virtual environments for scientific visualization — cross-platform social WebXR without the networking dev-trap",
+  "type": "module",
+  "main": "./src/Brahma.js",
+  "exports": {
+    ".": "./src/Brahma.js"
+  },
+  "files": [
+    "src"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smrghsh/brahma.git"
+  },
+  "homepage": "https://github.com/smrghsh/brahma#readme",
+  "author": "Samir Ghosh",
+  "license": "MIT",
+  "keywords": [
+    "webxr",
+    "three",
+    "threejs",
+    "multiplayer",
+    "social-xr",
+    "scientific-visualization",
+    "data-visualization",
+    "vr"
+  ],
+  "peerDependencies": {
+    "lil-gui": ">=0.17.0",
+    "three": ">=0.160.0 <1"
+  },
+  "peerDependenciesMeta": {
+    "lil-gui": {
+      "optional": true
+    }
+  }
+}

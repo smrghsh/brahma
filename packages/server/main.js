@@ -81,7 +81,7 @@ function generateUsername() {
     username = "User-";
     for (let i = 0; i < 2; i++) {
       username += alphanumeric.charAt(
-        Math.floor(Math.random() * alphanumeric.length)
+        Math.floor(Math.random() * alphanumeric.length),
       );
     }
   } while (Object.keys(interlocutors).includes(username)); // Ensure unique username
@@ -141,7 +141,7 @@ function broadcast() {
       HMDPosition,
       LController,
       RController,
-    })
+    }),
   );
 
   packet = JSON.stringify(packet);
@@ -162,7 +162,7 @@ function broadcastCallout(excludeUser) {
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       const clientUser = Object.values(interlocutors).find(
-        (i) => i.ws === client
+        (i) => i.ws === client,
       );
       if (clientUser && clientUser.name !== excludeUser) {
         client.send(packet);
@@ -204,7 +204,7 @@ wss.on("connection", function connection(ws) {
           };
           interlocutors[data.name].timeJoined = Date.now();
           console.log(
-            `New interlocutor created: ${data.name}, color: ${data.color}`
+            `New interlocutor created: ${data.name}, color: ${data.color}`,
           );
         } else {
           // Update WebSocket reference in case of reconnection
@@ -236,7 +236,7 @@ wss.on("connection", function connection(ws) {
           1000
         ).toFixed(1);
         console.log(
-          `🔌 Client disconnected: ${name} (session duration: ${sessionDuration}s)`
+          `🔌 Client disconnected: ${name} (session duration: ${sessionDuration}s)`,
         );
         delete interlocutors[name];
         console.log(`📊 Active users: ${Object.keys(interlocutors).length}`);

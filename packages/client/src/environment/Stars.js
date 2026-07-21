@@ -28,11 +28,11 @@ export default class Stars {
     }
     particlesGeometry.setAttribute(
       "position",
-      new THREE.BufferAttribute(positions, 3)
+      new THREE.BufferAttribute(positions, 3),
     );
     particlesGeometry.setAttribute(
       "color",
-      new THREE.BufferAttribute(color, 3)
+      new THREE.BufferAttribute(color, 3),
     );
     const particlesMaterial = new THREE.PointsMaterial({
       size: 0.2,

@@ -8,7 +8,7 @@ export default class Path extends THREE.Group {
     material,
     name = "not named",
     initialColor = 0x00ff00,
-    hoveredColor = 0xff0000
+    hoveredColor = 0xff0000,
   ) {
     super();
 
@@ -95,7 +95,7 @@ export default class Path extends THREE.Group {
           // Set the seal path and point index for navigation
           this.experience.world.callout.setSealPath(
             this.sealPath,
-            nearestData.index
+            nearestData.index,
           );
 
           this.experience.world.callout.updateInformationDisplay(
@@ -110,7 +110,7 @@ export default class Path extends THREE.Group {
             nearestData.heartRate,
             nearestData.heading,
             nearestData.pitch,
-            nearestData.roll
+            nearestData.roll,
           );
 
           // Update graphs asynchronously
@@ -118,7 +118,7 @@ export default class Path extends THREE.Group {
             setTimeout(() => {
               this.experience.world.graphs.updateGraphs(
                 this.sealPath,
-                nearestData.index
+                nearestData.index,
               );
             }, 0);
           }
@@ -129,7 +129,7 @@ export default class Path extends THREE.Group {
               true,
               this.experience.world.callout.position,
               this.sealPath.name,
-              nearestData.index
+              nearestData.index,
             );
           }
         }
@@ -150,7 +150,7 @@ export default class Path extends THREE.Group {
   }
   // this should be removed, however, you may or may not need to use this strategy for placing the callout
   setSphere(
-    location //location is a 3d vector
+    location, //location is a 3d vector
   ) {
     this.marker.position.copy(location);
     this.worldToLocal(this.marker.position); // convert world position to local

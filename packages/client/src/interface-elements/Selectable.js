@@ -7,7 +7,7 @@ export default class Selectable extends THREE.Mesh {
     material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
     name = "not named",
     initialColor = 0x00ff00,
-    hoveredColor = 0xff0000
+    hoveredColor = 0xff0000,
   ) {
     super(geometry, material);
     this.initialColor = initialColor; // green (default)

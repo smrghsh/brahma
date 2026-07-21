@@ -47,7 +47,7 @@ export default class Locomotion {
         // Determine the current floor based on the camera's y position
         const currentY = this.experience.cameraGroup.position.y;
         let currentFloorIndex = this.floors.findIndex(
-          (floorY) => floorY === currentY
+          (floorY) => floorY === currentY,
         );
 
         // If the current floor is not found (for example, if the position is slightly off)
@@ -68,7 +68,7 @@ export default class Locomotion {
         this.experience.cameraGroup.position.set(
           0,
           this.floors[nextFloorIndex],
-          0
+          0,
         );
 
         // Update the last teleport time

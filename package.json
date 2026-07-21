@@ -1,0 +1,19 @@
+{
+  "name": "brahma-monorepo",
+  "private": true,
+  "description": "Monorepo for brahma-xr (client) and brahma-xr-server — collaborative virtual environments for scientific visualization",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "test": "vitest run --passWithNoTests",
+    "format": "prettier --write \"packages/**/*.{js,json,md}\"",
+    "format:check": "prettier --check \"packages/**/*.{js,json,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.3.0",
+    "vitest": "^3.0.0"
+  }
+}

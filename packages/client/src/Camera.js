@@ -17,12 +17,12 @@ export default class Camera {
       35,
       this.sizes.width / this.sizes.height,
       0.1,
-      1000
+      1000,
     );
     this.instance.position.set(
       -3.6277092514077784,
       1.6242714732329864,
-      2.729361431631495
+      2.729361431631495,
     );
     this.instance.lookAt(new THREE.Vector3(0, 0, 0));
     this.cameraGroup.add(this.instance);

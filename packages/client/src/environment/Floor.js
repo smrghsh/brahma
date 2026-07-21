@@ -16,7 +16,7 @@ export default class Floor {
     });
     this.floorPlane = new THREE.Mesh(
       this.geometry,
-      this.horizontalGridMaterial
+      this.horizontalGridMaterial,
     );
     this.floorPlane.x -= 15;
     this.floorPlane.z -= 15;

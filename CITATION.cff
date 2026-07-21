@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use Brahma in your research, please cite the paper below."
+title: "Brahma"
+type: software
+authors:
+  - family-names: Ghosh
+    given-names: Samir
+license: MIT
+repository-code: "https://github.com/smrghsh/brahma"
+preferred-citation:
+  type: conference-paper
+  title: "Brahma: an Open Source Library for Cross-platform Social XR and Scientific Visualization"
+  authors:
+    - family-names: Ghosh
+      given-names: Samir
+    - family-names: McVeigh-Schultz
+      given-names: Joshua
+    - family-names: Isbister
+      given-names: Katherine
+  year: 2026
+  conference:
+    name: "Social Augmentation through XR Technologies (SAXR) Workshop at CHI '26"
