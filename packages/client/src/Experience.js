@@ -10,6 +10,7 @@ import Renderer from "./Renderer.js";
 import User from "./networking/User.js";
 import Networking from "./networking/Networking.js";
 import Controller from "./controller/Controller.js";
+import Hands from "./controller/Hands.js";
 import Pointer from "./Pointer.js";
 
 let instance = null;
@@ -97,6 +98,7 @@ export default class Experience extends EventEmitter {
 
     /** XR/Immersive Code */
     this.controller = new Controller();
+    this.hands = new Hands();
     if (this.config.xr) {
       this.renderer.instance.xr.enabled = true;
       this.vrButton = VRButton.createButton(this.renderer.instance);
@@ -106,6 +108,7 @@ export default class Experience extends EventEmitter {
     // setAnimationLoop runs on desktop too, and is the only loop that runs in XR
     this.renderer.instance.setAnimationLoop(() => {
       this.controller.update();
+      this.hands.update();
       if (this.networking?.canSendEmbodiment) {
         this.networking.sendEmbodiment(
           this.camera.instance.matrixWorld,
