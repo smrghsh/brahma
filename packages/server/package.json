@@ -5,7 +5,7 @@
   "type": "module",
   "main": "main.js",
   "bin": {
-    "brahma-xr-server": "./main.js"
+    "brahma-xr-server": "main.js"
   },
   "scripts": {
     "start": "node main.js"

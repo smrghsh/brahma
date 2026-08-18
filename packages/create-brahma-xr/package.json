@@ -4,7 +4,7 @@
   "description": "Scaffold a minimal brahma-xr project — a shared virtual world, ready to run",
   "type": "module",
   "bin": {
-    "create-brahma-xr": "./index.mjs"
+    "create-brahma-xr": "index.mjs"
   },
   "files": [
     "index.mjs",
