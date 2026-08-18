@@ -44,54 +44,68 @@ Brahma is an open source WebXR library for building multi-user virtual reality e
 
 ## Getting Started
 
-### Install
+### Quickstart
 
 ```bash
-npm install brahma-xr three
-```
-
-### Basic client usage
-
-```js
-import { Brahma } from 'brahma-xr';
-import * as THREE from 'three';
-
-const brahma = new Brahma();
-brahma.speak(); // "I am the creator of collaborative environments"
-```
-
-### Server
-
-Brahma includes a lightweight WebSocket + REST server:
-
-```js
-import { BrahmaServer } from 'brahma-xr/server';
-
-const server = new BrahmaServer();
-```
-
-Run locally:
-
-```bash
+npm create brahma-xr@latest my-world
+cd my-world
 npm install
-npm run build
-npm run server
+npm run dev            # terminal 1 — the app (https://localhost:5173)
+npx brahma-xr-server   # terminal 2 — the relay (ws://localhost:8080)
 ```
 
-Then open `http://localhost:3000` (or your configured port) in a WebXR-capable browser or headset.
+Open two tabs, click **Join Session** in both — each sees the other as a
+colored avatar. Edit `src/Experience/World.js` to build your world.
+
+The template is the [starter](./starter) workspace — brahma's `Experience`
+as-is, your `World.js`. Working in this repo, run it directly with
+`npm install && npm --prefix starter run dev`. In an existing project:
+`npm install brahma-xr@beta three` (the `beta` tag matters until v2 is
+promoted to `latest`).
+
+```js
+import { Experience } from "brahma-xr";
+import World from "./Experience/World.js";
+
+const experience = new Experience({
+  canvas: document.querySelector("canvas.webgl"),
+  networking: { url: "ws://localhost:8080", room: "my-world" },
+});
+experience.world = new World();
+experience.join();
+```
+
+The relay server is self-hosted and deliberately minimal — see
+[`packages/server`](./packages/server) for env config (`PORT`, TLS,
+telemetry) and deployment recipes.
 
 ---
 
-## Examples
+## Examples & the local playground
+
+```bash
+npm run hub
+```
+
+builds the starter and every example as real exported bundles, serves them
+behind a splash page at **http://localhost:4173**, and starts a relay — open
+any app in two windows to feel the multiplayer.
 
 | Example | Description |
 |---|---|
-| 🔥 **Civil Engineering / Wildfire** | Collaborative geospatial visualization of wildfire burn areas using photosphere imagery and tile-based 3D terrain |
-| 🦭 **Southern Elephant Seals** | *(coming soon)* Multi-user spatial analysis of seal tracking data |
-| 🪸 **Coral Reef Gaussian Splat** | *(coming soon)* Collaborative exploration of Gaussian splatting renderings of coral reef structures |
-| 🧬 **RYR1 Protein Viewer** | *(coming soon)* Shared visualization of RYR1 protein structures for biochemistry research |
+| [`starter/`](./starter) | **The quickstart** — brahma's Experience as-is, your `World.js`. Synced to the `brahma-starter` template repo. |
+| [`examples/bruno-simon-integration/`](./examples/bruno-simon-integration) | An app that **owns its Experience subclass** — the structure of the five research apps, with custom camera options. |
+| [`examples/data-vis-csv/`](./examples/data-vis-csv) | Seals-style data-vis: CSV tracks, selectable points, callouts shared over the relay. |
 
-See the [`examples/`](./examples) folder for source code.
+Four smoke tests cover the whole path (each is two headless users joining
+and seeing each other's avatars):
+
+```bash
+npm run smoke          # dev server — fast inner loop
+npm run smoke:bundle   # the exported vite builds, served statically (runs in CI)
+npm run smoke:pack     # npm-packed tarballs installed fresh — the outsider path
+npm run smoke:create   # npm create brahma-xr from packed tarballs — the newcomer path (runs in CI)
+```
 
 ---
 
