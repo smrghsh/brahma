@@ -1,0 +1,5 @@
+# build outputs
+**/docs/
+dist/
+# generated from starter/ at pack time (see sync-template.mjs)
+packages/create-brahma-xr/template/

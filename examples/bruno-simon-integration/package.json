@@ -1,8 +1,8 @@
 {
-  "name": "brahma-starter",
+  "name": "example-bruno-simon-integration",
   "private": true,
   "version": "2.0.0-beta.0",
-  "description": "A shared virtual world — built on brahma-xr",
+  "description": "brahma in an app that owns its Experience subclass — the structure of the five research apps",
   "type": "module",
   "scripts": {
     "dev": "vite",

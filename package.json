@@ -10,12 +10,15 @@
   ],
   "scripts": {
     "test": "vitest run --passWithNoTests",
-    "format": "prettier --write \"packages/**/*.{js,json,md}\"",
-    "format:check": "prettier --check \"packages/**/*.{js,json,md}\""
+    "hub": "node scripts/hub.mjs",
+    "format": "prettier --write \"packages/**/*.{js,json,md}\" \"{examples,starter,scripts,home}/**/*.{js,mjs,json,html}\"",
+    "format:check": "prettier --check \"packages/**/*.{js,json,md}\" \"{examples,starter,scripts,home}/**/*.{js,mjs,json,html}\""
   },
   "devDependencies": {
+    "lil-gui": "^0.17.0",
     "playwright": "^1.61.1",
     "prettier": "^3.3.0",
+    "three": "^0.169.0",
     "vitest": "^3.0.0"
   }
 }

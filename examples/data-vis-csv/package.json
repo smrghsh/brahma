@@ -1,8 +1,8 @@
 {
-  "name": "brahma-starter",
+  "name": "example-data-vis-csv",
   "private": true,
   "version": "2.0.0-beta.0",
-  "description": "A shared virtual world — built on brahma-xr",
+  "description": "brahma data-vis example — CSV tracks, selectable points, callouts shared over the relay (seals-style)",
   "type": "module",
   "scripts": {
     "dev": "vite",
