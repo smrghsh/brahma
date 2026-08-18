@@ -1,85 +1,61 @@
-import { chromium } from "playwright";
+#!/usr/bin/env node
+// Fast inner-loop smoke test against the starter's DEV server: two users
+// join, see each other, and a disconnect purges cleanly. Starts the vite
+// dev server (plain-http config) and the relay itself unless they're
+// already running. For the exported-bundle and packed-tarball variants see
+// smoke-bundle.mjs and smoke-pack.mjs.
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { run, isPortOpen, waitForPort, killAll } from "./lib/procs.mjs";
+import { launchBrowser, runMoneyMoment } from "./lib/moneyMoment.mjs";
 
-const APP = "http://localhost:5173";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const APP_PORT = 5173;
+const RELAY_PORT = 8080;
 
-const browser = await chromium.launch({
-  args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-webgl"],
-});
-
-async function openUser(label, cameraGroupOffset) {
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  page.on("console", (msg) => {
-    if (msg.type() === "error")
-      console.log(`[${label}] console.error:`, msg.text());
+if (await isPortOpen(RELAY_PORT)) {
+  console.log(`🛜 relay already running on port ${RELAY_PORT} — reusing it`);
+} else {
+  run("node", [path.join(root, "packages", "server", "main.js")], {
+    env: { ...process.env, PORT: String(RELAY_PORT) },
   });
-  page.on("pageerror", (err) =>
-    console.log(`[${label}] pageerror:`, err.message),
+  await waitForPort(RELAY_PORT);
+}
+
+if (await isPortOpen(APP_PORT)) {
+  console.log(`⚡ dev server already running on port ${APP_PORT} — reusing it`);
+} else {
+  run(
+    process.platform === "win32" ? "npm.cmd" : "npm",
+    [
+      "--prefix",
+      path.join(root, "starter"),
+      "run",
+      "dev",
+      "--",
+      "--config",
+      "vite.config.ci.js",
+      "--port",
+      String(APP_PORT),
+      "--strictPort",
+    ],
+    {},
   );
-  await page.goto(APP);
-  await page.waitForSelector("#join", { state: "visible" });
-  // wait for the experience to exist
-  await page.waitForFunction(() => window.experience?.renderer?.instance);
-  if (cameraGroupOffset) {
-    await page.evaluate(([x, y, z]) => {
-      window.experience.cameraGroup.position.set(x, y, z);
-    }, cameraGroupOffset);
-  }
-  await page.click("#join");
-  await page.waitForFunction(
-    () => window.experience.networking?.connected,
-    null,
-    {
-      timeout: 5000,
+  await waitForPort(APP_PORT);
+}
+
+const browser = await launchBrowser();
+try {
+  await runMoneyMoment(browser, `http://localhost:${APP_PORT}`, {
+    screenshots: {
+      alice: "/tmp/brahma-alice.png",
+      bob: "/tmp/brahma-bob.png",
     },
-  );
-  const identity = await page.evaluate(() => ({
-    name: window.experience.user.parameters.userName,
-    color: window.experience.user.parameters.color,
-  }));
-  console.log(`[${label}] joined as`, identity.name, identity.color);
-  return { context, page, label, identity };
+  });
+} catch (error) {
+  console.error("❌ smoke test failed:", error.message);
+  process.exitCode = 1;
+} finally {
+  await browser.close();
+  killAll();
 }
-
-const alice = await openUser("alice", null);
-const bob = await openUser("bob", [1.5, 0, -1]);
-
-// each page should now see exactly one interlocutor: the other user
-async function seenBy(user) {
-  await user.page.waitForFunction(
-    () =>
-      Object.keys(window.experience.networking.interlocutors.bodies).length ===
-      1,
-    null,
-    { timeout: 5000 },
-  );
-  return user.page.evaluate(() =>
-    Object.keys(window.experience.networking.interlocutors.bodies),
-  );
-}
-
-const aliceSees = await seenBy(alice);
-const bobSees = await seenBy(bob);
-console.log("[alice] sees avatars of:", aliceSees);
-console.log("[bob]   sees avatars of:", bobSees);
-
-if (aliceSees[0] !== bob.identity.name || bobSees[0] !== alice.identity.name) {
-  console.log("MISMATCH — avatars do not correspond to the other user");
-  process.exit(1);
-}
-
-await alice.page.screenshot({ path: "/tmp/brahma-alice.png" });
-await bob.page.screenshot({ path: "/tmp/brahma-bob.png" });
-
-// disconnect bob; alice must see the purge
-await bob.context.close();
-await alice.page.waitForFunction(
-  () =>
-    Object.keys(window.experience.networking.interlocutors.bodies).length === 0,
-  null,
-  { timeout: 5000 },
-);
-console.log("[alice] saw bob purged after disconnect ✔");
-
-await browser.close();
-console.log("MONEY MOMENT VERIFIED ✔");

@@ -11,6 +11,10 @@
   "scripts": {
     "test": "vitest run --passWithNoTests",
     "hub": "node scripts/hub.mjs",
+    "smoke": "node scripts/smoke-multiplayer.mjs",
+    "smoke:bundle": "node scripts/smoke-bundle.mjs",
+    "smoke:pack": "node scripts/smoke-pack.mjs",
+    "smoke:create": "node scripts/smoke-create.mjs",
     "format": "prettier --write \"packages/**/*.{js,json,md}\" \"{examples,starter,scripts,home}/**/*.{js,mjs,json,html}\"",
     "format:check": "prettier --check \"packages/**/*.{js,json,md}\" \"{examples,starter,scripts,home}/**/*.{js,mjs,json,html}\""
   },

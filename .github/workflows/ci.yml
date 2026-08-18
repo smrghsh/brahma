@@ -17,3 +17,32 @@ jobs:
       - run: npm ci
       - run: npm run format:check
       - run: npm test
+
+  # Two headless users join each built app (starter + examples) and must see
+  # each other's avatars — the money moment, against the exported bundles.
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run smoke:bundle
+
+  # The newcomer path: pack all three packages, scaffold a project with the
+  # packed create-brahma-xr bin, fresh-install, build, and run the same
+  # two-user money moment — catches template/prepack/bin mistakes.
+  smoke-create:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run smoke:create

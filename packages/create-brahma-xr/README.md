@@ -28,5 +28,5 @@ Smoke-test the full outsider path (pack → scaffold → install → build →
 two-user session) with:
 
 ```bash
-node scripts/smoke-create.mjs   # from the monorepo root
+npm run smoke:create   # from the monorepo root
 ```
