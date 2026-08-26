@@ -1,0 +1,11 @@
+Brahma
+Copyright (c) 2026 Samir Ghosh and Brahma contributors
+
+The engine utilities in packages/client/src/utilities/ (EventEmitter, Sizes,
+Time, Resources, Debug) and the Experience/World application structure follow
+the Three.js Journey course architecture created by Bruno Simon
+(https://threejs-journey.com), which has become a canonical way to structure
+Three.js applications. Brahma builds on that pattern with gratitude.
+
+Development of Brahma is supported by the Alfred P. Sloan Foundation
+(grant G-2023-20978) and contributions via Google Summer of Code (UCSC OSPO).

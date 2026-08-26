@@ -1,0 +1,35 @@
+{
+  "name": "brahma-xr-server",
+  "version": "2.0.0-beta.0",
+  "description": "Self-hostable WebSocket relay server for brahma-xr collaborative WebXR environments",
+  "type": "module",
+  "main": "main.js",
+  "bin": {
+    "brahma-xr-server": "main.js"
+  },
+  "scripts": {
+    "start": "node main.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smrghsh/brahma.git",
+    "directory": "packages/server"
+  },
+  "author": "Samir Ghosh",
+  "license": "MIT",
+  "keywords": [
+    "webxr",
+    "websocket",
+    "relay",
+    "multiplayer",
+    "social-xr"
+  ],
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "ws": "^8.16.0"
+  }
+}

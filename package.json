@@ -1,0 +1,28 @@
+{
+  "name": "brahma-monorepo",
+  "private": true,
+  "description": "Monorepo for brahma-xr (client) and brahma-xr-server — collaborative virtual environments for scientific visualization",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "starter",
+    "examples/*"
+  ],
+  "scripts": {
+    "test": "vitest run --passWithNoTests",
+    "hub": "node scripts/hub.mjs",
+    "smoke": "node scripts/smoke-multiplayer.mjs",
+    "smoke:bundle": "node scripts/smoke-bundle.mjs",
+    "smoke:pack": "node scripts/smoke-pack.mjs",
+    "smoke:create": "node scripts/smoke-create.mjs",
+    "format": "prettier --write \"packages/**/*.{js,json,md}\" \"{examples,starter,scripts,home}/**/*.{js,mjs,json,html}\"",
+    "format:check": "prettier --check \"packages/**/*.{js,json,md}\" \"{examples,starter,scripts,home}/**/*.{js,mjs,json,html}\""
+  },
+  "devDependencies": {
+    "lil-gui": "^0.17.0",
+    "playwright": "^1.61.1",
+    "prettier": "^3.3.0",
+    "three": "^0.169.0",
+    "vitest": "^3.0.0"
+  }
+}

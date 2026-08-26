@@ -1,0 +1,39 @@
+{
+  "name": "create-brahma-xr",
+  "version": "2.0.0-beta.0",
+  "description": "Scaffold a minimal brahma-xr project — a shared virtual world, ready to run",
+  "type": "module",
+  "bin": {
+    "create-brahma-xr": "index.mjs"
+  },
+  "files": [
+    "index.mjs",
+    "sync-template.mjs",
+    "template"
+  ],
+  "scripts": {
+    "prepack": "node ./sync-template.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smrghsh/brahma.git",
+    "directory": "packages/create-brahma-xr"
+  },
+  "homepage": "https://github.com/smrghsh/brahma#readme",
+  "author": "Samir Ghosh",
+  "license": "MIT",
+  "keywords": [
+    "webxr",
+    "three",
+    "threejs",
+    "multiplayer",
+    "social-xr",
+    "scientific-visualization",
+    "create",
+    "scaffold",
+    "template"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

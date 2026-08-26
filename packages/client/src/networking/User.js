@@ -1,0 +1,23 @@
+import Experience from "../Experience.js";
+
+export default class User {
+  constructor() {
+    this.experience = new Experience();
+    this.debug = this.experience.debug;
+    this.parameters = {
+      userName: "User",
+      color: "#ffffff", // overwritten by the server on welcome; lil-gui addColor rejects null
+    };
+    if (this.debug?.active) {
+      this.debugFolder = this.debug.ui.addFolder("user");
+      this.debugFolder.addColor(this.parameters, "color").onChange((value) => {
+        this.parameters.color = value;
+        console.log(` color parameter changed to ${this.parameters.color}`);
+      });
+      // set user name
+      this.debugFolder.add(this.parameters, "userName").onChange((value) => {
+        this.parameters.userName = value;
+      });
+    }
+  }
+}
