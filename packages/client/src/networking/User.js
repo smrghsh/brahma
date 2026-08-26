@@ -6,7 +6,7 @@ export default class User {
     this.debug = this.experience.debug;
     this.parameters = {
       userName: "User",
-      color: null,
+      color: "#ffffff", // overwritten by the server on welcome; lil-gui addColor rejects null
     };
     if (this.debug?.active) {
       this.debugFolder = this.debug.ui.addFolder("user");
